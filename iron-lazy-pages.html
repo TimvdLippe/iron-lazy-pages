@@ -8,6 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-selector/iron-selectable.html">
 
 <!--
 
@@ -18,18 +19,114 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <dom-module id="iron-lazy-pages">
   <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      :host > ::content > :not(.iron-selected) {
+        display: none !important;
+      }
+    </style>
+
     <content></content>
   </template>
+  <script>
+  (function() {
+    var lazyPageNodeName = 'iron-lazy-page';
+
+    Polymer({
+
+      is: 'iron-lazy-pages',
+
+      behaviors: [Polymer.IronSelectableBehavior],
+
+      _applySelection: function(item, isSelected) {
+        if (isSelected) {
+          item.loadAndShow();
+        } else {
+          item.hide();
+        }
+        if (this.selectedAttribute) {
+          this.toggleAttribute(this.selectedAttribute, isSelected, item);
+        }
+        this._selectionChange();
+        this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      },
+
+      _filterItem: function(node) {
+        return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === lazyPageNodeName;
+      }
+    });
+
+    // Based on implementation of dom-if
+    Polymer({
+      is: lazyPageNodeName,
+
+      extends: 'template',
+
+      properties: {
+        path: {
+          type: String,
+          value: ''
+        }
+      },
+
+      behaviors: [
+        Polymer.Templatizer
+      ],
+
+      loadAndShow: function() {
+        if (!this.loaded && this.path) {
+          this.importHref(this.path, function(e) {
+            this.loaded = true;
+          }.bind(this), function(e) {
+            // TODO: somehow force after the next error to actually retry to
+            // load the page.
+            e.srcElement.parentNode.removeChild(e.srcElement);
+          });
+        }
+        if (!this.ctor) {
+          this.templatize(this);
+        }
+        // Attach logic of dom-if
+        var parentNode = Polymer.dom(this).parentNode;
+        if (parentNode) {
+          var parent = Polymer.dom(parentNode);
+          if (!this._instance) {
+            this._instance = this.stamp();
+            var root = this._instance.root;
+            parent.insertBefore(root, this);
+          } else {
+            var c$ = this._instance._children;
+            if (c$ && c$.length) {
+              // Detect case where dom-if was re-attached in new position
+              var lastChild = Polymer.dom(this).previousSibling;
+              if (lastChild !== c$[c$.length-1]) {
+                for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+                  parent.insertBefore(n, this);
+                }
+              }
+            }
+          }
+        }
+      },
+
+      hide: function() {
+        if (this._instance) {
+          var c$ = this._instance._children;
+          if (c$ && c$.length) {
+            // use first child parent, for case when dom-if may have been detached
+            var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);
+            for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+              parent.removeChild(n);
+            }
+          }
+          this._instance = null;
+        }
+      }
+    })
+  })();
+  </script>
+
 </dom-module>
-
-<script>
-
-  Polymer({
-
-    is: 'iron-lazy-pages',
-
-    properties: {
-    }
-  });
-
-</script>

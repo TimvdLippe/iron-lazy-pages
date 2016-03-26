@@ -14,23 +14,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-lazy-pages Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../paper-tabs/paper-tabs.html">
+    <link rel="import" href="../../paper-tabs/paper-tab.html">
     <link rel="import" href="../iron-lazy-pages.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles"></style>
   </head>
   <body unresolved>
+    <demo-snippet class="centered">
+      <template>
+        <template is="dom-bind">
+          <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tab key='foo'>Foo</paper-tab>
+            <paper-tab key='bar'>Bar</paper-tab>
+            <paper-tab key='baz'>Baz!</paper-tab>
+          </paper-tabs>
 
-    <p>An example of <code>&lt;iron-lazy-pages&gt;</code>:</p>
-
-    <button>Say Something</button>
-
-    <iron-lazy-pages author='{"name": "Lord Meowser", "image": "http://placekitten.com/g/200/300"}' fancy>
-      <h2>Hello iron-lazy-pages</h2>
-    </iron-lazy-pages>
-
-    <script>
-      document.querySelector('button').addEventListener('click', function() {
-        alert(document.querySelector('iron-lazy-pages').sayHello('Hallo!'));
-      });
-    </script>
-
+          <iron-lazy-pages attr-for-selected="data-route" selected="{{route}}">
+            <template is="iron-lazy-page" data-route="foo" path="element.html">
+              Foo page
+            </template>
+            <template is="iron-lazy-page" data-route="bar">
+              Bar page
+            </template>
+            <template is="iron-lazy-page" data-route="baz">
+              Baz page
+            </template>
+          </iron-lazy-pages>
+        </template>
+      </template>
+    </demo-snippet>
   </body>
 </html>
