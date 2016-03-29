@@ -1,56 +1,65 @@
 # iron-lazy-pages
 
-An element providing a starting point for your own reusable Polymer elements.
+[`<iron-pages>`](https://github.com/PolymerElements/iron-pages) with lazy-loading functionality.
 
 
-## Dependencies
+## Features
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
+`iron-lazy-pages` uses a custom `iron-lazy-page` element to show and hide the
+correct elements according to the provided route. In contrast, `iron-pages`
+uses CSS rules to enable this behavior, but the elements are still stamped
+to the dom. Using dom-features like `template` a performance increase can be obtained.
 
-    npm install -g bower
+### Lazy-loading pages
 
-Then, go ahead and download the element's dependencies:
+Big applications have a lot of pages. On first load, loading all page elements
+is undesirable. Most of the pages are unused for the current user. To solve
+these performance issues, lazy-loading provides an easy-to-use solution.
 
-    bower install
+Lazy-loading means that all elements of your page are loaded when the user
+opens the respective page. E.g. when your user visits `domain.com/about`, all
+elements on the about page are fetched and loaded.
 
+Example:
+```html
+<iron-lazy-pages attr-for-selected="data-route" selected="{{route}}">
+  <template is="iron-lazy-page" data-route="foo" path="foo/foo.html">
+    Foo page
+  </template>
+</iron-lazy-pages>
+```
+In the above example, whenever the user routes to `domain.com/foo`, the elements defined
+in `foo/foo.html` are fetched from the server and loaded by Polymer. Then the
+content of the `template` is stamped to the parent `iron-lazy-pages`.
 
-## Playing With Your Element
+## Lazy-register elements
 
-If you wish to work on your element in isolation, we recommend that you use
-[Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
-bower dependencies in line. You can install it via:
+Since elements are defined inside a template, the elements are stamped when the
+correct route matches. This means that if `lazyRegister` is enabled
+(new feature in [Polymer 1.4.0](https://github.com/Polymer/polymer/releases/tag/v1.4.0))
+the elements are registered and parsed when they are stamped to the dom.
 
-    npm install -g polyserve
+Example
+```html
+<iron-lazy-pages attr-for-selected="data-route" selected="foo">
+  <template is="iron-lazy-page" data-route="foo">
+    Foo page
+  </template>
+  <template is="iron-lazy-page" data-route="bar">
+    <bar-page></bar-page>
+  </template>
+</iron-lazy-pages>
+```
+In the above example, all dom-content of `<bar-page>` is not parsed as the route
+does match `domain.com/bar`.
 
-And you can run it via:
+## Agnostic for HTTP version
 
-    polyserve
+`iron-lazy-pages` does not restrict a usage of a specific HTTP protocol with
+accompanying build process. You can use [vulcanize-with-shards](https://github.com/PolymerLabs/web-component-shards) in
+your build process to shard all pages into separate HTML imports. This build
+process offers superior performance on users with HTTP1.1.
 
-Once running, you can preview your element at
-`http://localhost:8080/components/iron-lazy-pages/`, where `iron-lazy-pages` is the name of the directory containing it.
-
-
-## Testing Your Element
-
-Simply navigate to the `/test` directory of your element to run its tests. If
-you are using Polyserve: `http://localhost:8080/components/iron-lazy-pages/test/`
-
-### web-component-tester
-
-The tests are compatible with [web-component-tester](https://github.com/Polymer/web-component-tester).
-Install it via:
-
-    npm install -g web-component-tester
-
-Then, you can run your tests on _all_ of your local browsers via:
-
-    wct
-
-#### WCT Tips
-
-`wct -l chrome` will only run tests in chrome.
-
-`wct -p` will keep the browsers alive after test runs (refresh to re-run).
-
-`wct test/some-file.html` will test only the files you specify.
+However, you can seemlessly transition to HTTP2 and utilize the same lazy
+loading features. This enables for a smooth transition when the adoption rate
+of HTTP2 is sufficient enough.
