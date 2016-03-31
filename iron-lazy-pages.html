@@ -74,13 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       loadAndShow: function() {
         if (!this.loaded && this.path) {
-          this.importHref(this.path, function(e) {
-            this.loaded = true;
-          }.bind(this), function(e) {
-            // TODO: somehow force after the next error to actually retry to
-            // load the page.
-            e.srcElement.parentNode.removeChild(e.srcElement);
-          });
+          this._importHref();
         }
         if (!this.ctor) {
           this.templatize(this);
@@ -106,6 +100,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         }
+      },
+
+      _importHref: function() {
+        if (!this.timesFailed) {
+          this._path = this.path;
+          this.timesFailed = 0;
+        }
+        var self = this;
+        this.importHref(this._path, function(e) {
+          self.loaded = true;
+          self.timesFailed = 0;
+        }, function(e) {
+          self._path = self.path + '?' + self.timesFailed++;
+        });
       },
 
       hide: function() {
