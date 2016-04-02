@@ -37,6 +37,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       behaviors: [Polymer.IronSelectableBehavior],
 
+      properties: {
+        // as the selected page is the only one visible, activateEvent
+        // is both non-sensical and problematic; e.g. in cases where a user
+        // handler attempts to change the page and the activateEvent
+        // handler immediately changes it back
+        activateEvent: {
+          type: String,
+          value: null
+        }
+      },
+
       _applySelection: function(item, isSelected) {
         if (isSelected) {
           item.loadAndShow();
