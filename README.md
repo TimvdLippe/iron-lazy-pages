@@ -5,10 +5,10 @@
 
 ## Features
 
-`iron-lazy-pages` uses a custom `iron-lazy-page` element to show and hide the
+`iron-lazy-pages` uses a custom `iron-lazy-page` type extension element to show and hide the
 correct elements according to the provided route. In contrast, `iron-pages`
 uses CSS rules to enable this behavior, but the elements are still stamped
-to the dom. Using dom-features like `template` a performance increase can be obtained.
+to the dom. Extending the `template` tag, its contents inert until needed, a performance increase can be obtained.
 
 ### Lazy-loading pages
 
