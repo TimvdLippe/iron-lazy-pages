@@ -29,8 +29,10 @@ Example:
 </iron-lazy-pages>
 ```
 In the above example, whenever the user routes to `domain.com/foo`, the elements defined
-in `foo/foo.html` are fetched from the server and loaded by Polymer. Then the
+in `foo/foo.html` are fetched from the server and loaded by Polymer. At the same time the
 content of the `template` is stamped to the parent `iron-lazy-pages`.
+Note: this means that unstyled dom content is attached to the parent until the browser
+finished loading the file and Polymer parsed the content
 
 Consequently whenever the selected value changes from `foo` to `bar`, the page `foo`
 will be removed from the parent.
@@ -57,7 +59,7 @@ Example
 </iron-lazy-pages>
 ```
 In the above example, all dom-content of `<bar-page>` is not parsed as the route
-does match `domain.com/bar`.
+does not match `domain.com/bar`.
 
 ### Registering of shared elements
 
