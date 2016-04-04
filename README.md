@@ -32,6 +32,12 @@ In the above example, whenever the user routes to `domain.com/foo`, the elements
 in `foo/foo.html` are fetched from the server and loaded by Polymer. Then the
 content of the `template` is stamped to the parent `iron-lazy-pages`.
 
+Consequently whenever the selected value changes from `foo` to `bar`, the page `foo`
+will be removed from the parent.
+
+Fetching is only performed once, e.g. switching from `foo` to `bar` to `foo` will fetch
+`foo` once and stamp `foo` twice.
+
 ## Lazy-register elements
 
 Since elements are defined inside a template, the elements are stamped when the
@@ -52,6 +58,32 @@ Example
 ```
 In the above example, all dom-content of `<bar-page>` is not parsed as the route
 does match `domain.com/bar`.
+
+### Registering of shared elements
+
+Lazy-registering is especially useful if `iron-lazy-pages` is used in conjunction with
+[vulcanize-with-shards](https://github.com/PolymerLabs/web-component-shards).
+All shared elements will not be registered until one of the pages that use
+the shared element is stamped to the dom.
+
+Example
+```html
+<iron-lazy-pages attr-for-selected="data-route" selected="{{route}}">
+  <template is="iron-lazy-page" data-route="foo">
+    Foo page
+  </template>
+  <template is="iron-lazy-page" data-route="bar">
+    <shared-header></shared-header>
+    <bar-page></bar-page>
+  </template>
+  <template is="iron-lazy-page" data-route="baz">
+    <shared-header></shared-header>
+    <baz-page></baz-page>
+  </template>
+</iron-lazy-pages>
+```
+In the above example, `shared-header` is only registered when visiting either
+`bar` or `baz`, but not `foo`.
 
 ## Agnostic for HTTP version
 
