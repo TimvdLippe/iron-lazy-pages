@@ -18,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 @hero hero.svg
 -->
 <dom-module id="iron-lazy-pages">
-  <template>
+  <template strip-whitespace>
     <style>
       :host {
         display: block;
@@ -105,11 +105,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             parent.insertBefore(root, this);
           } else {
             var c$ = this._instance._children;
-            if (c$ && c$.length) {
+            var c$Len = c$.length;
+            if (c$ && c$Len) {
               // Detect case where dom-if was re-attached in new position
               var lastChild = Polymer.dom(this).previousSibling;
-              if (lastChild !== c$[c$.length-1]) {
-                for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+              if (lastChild !== c$[c$Len - 1]) {
+                for (var i = 0, n; (i < c$Len) && (n = c$[i]); i++) {
                   parent.insertBefore(n, this);
                 }
               }
@@ -146,22 +147,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._path = this.path;
           this.timesFailed = 0;
         }
-        var self = this;
+        var _that = this;
         this.importHref(this._path, function(e) {
-          self.loaded = true;
-          self.timesFailed = 0;
+          _that.loaded = true;
+          _that.timesFailed = 0;
         }, function(e) {
-          self._path = self.path + '?' + self.timesFailed++;
+          _that._path = _that.path + '?' + _that.timesFailed++;
         });
       },
 
       hide: function() {
         if (this._instance) {
           var c$ = this._instance._children;
-          if (c$ && c$.length) {
+          var c$Len = c$.length;
+          if (c$ && c$Len) {
             // use first child parent, for case when dom-if may have been detached
             var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);
-            for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+            for (var i = 0, n; (i < c$Len) && (n = c$[i]); i++) {
               parent.removeChild(n);
             }
           }
