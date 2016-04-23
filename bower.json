@@ -13,7 +13,7 @@
   ],
   "main": "iron-lazy-pages.html",
   "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/TimvdLippe/iron-lazy-pages/",
+  "homepage": "http://timvdlippe.github.io/iron-lazy-pages/",
   "ignore": [
     "/.*",
     "/test/"
