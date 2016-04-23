@@ -2,6 +2,7 @@
 
 [`<iron-pages>`](https://github.com/PolymerElements/iron-pages) with lazy-loading functionality.
 
+[![Build Status](https://travis-ci.org/TimvdLippe/iron-lazy-pages.svg?branch=master)](https://travis-ci.org/TimvdLippe/iron-lazy-pages)
 
 ## Features
 
