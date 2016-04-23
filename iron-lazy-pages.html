@@ -172,7 +172,7 @@ of HTTP2 is sufficient enough.
 
       _itemDeselected: function(event) {
         if (this.hideImmediately) {
-          event.detail.item.hide();
+          event.detail.item._hide();
         } else {
           this._lastSelected = event.detail.item;
         }
@@ -180,10 +180,10 @@ of HTTP2 is sufficient enough.
 
       _itemSelected: function(event) {
         this._setLoading(true);
-        event.detail.item.loadAndShow(function() {
+        event.detail.item._loadAndShow(function() {
           this._setLoading(false);
           if (this._lastSelected) {
-            this._lastSelected.hide();
+            this._lastSelected._hide();
           }
         }.bind(this));
       },
@@ -199,6 +199,9 @@ of HTTP2 is sufficient enough.
       extends: 'template',
 
       properties: {
+        /**
+         * The url corresponding to the content which should be lazy-loaded.
+         */
         path: {
           type: String,
           value: ''
@@ -214,7 +217,7 @@ of HTTP2 is sufficient enough.
         BEGIN DOM-IF LOGIC
         ##################
        */
-      loadAndShow: function(cb) {
+      _loadAndShow: function(cb) {
         var onImportFinished = function() {
           cb();
           this._stamp();
@@ -295,7 +298,7 @@ of HTTP2 is sufficient enough.
         });
       },
 
-      hide: function() {
+      _hide: function() {
         if (this._instance) {
           var c$ = this._instance._children;
           if (c$ && c$.length) {
@@ -315,6 +318,8 @@ of HTTP2 is sufficient enough.
 </dom-module>
 
 <!--
+Template element used in conjunction with `iron-lazy-pages`.
+
 @element iron-lazy-page
 -->
 <dom-module id="iron-lazy-page">
