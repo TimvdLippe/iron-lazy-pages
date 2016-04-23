@@ -45,20 +45,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         activateEvent: {
           type: String,
           value: null
+        },
+
+        /**
+         * Indicates if the page is currently lazy-loading.
+         */
+        loading: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          readOnly: true
+        },
+
+        /**
+         * If set to true, the previous item will be removed immediately upon
+         * switching. By default the item is hidden when the importHref resolves.
+         */
+        hideImmediately: {
+          type: Boolean,
+          value: false
         }
       },
 
-      _applySelection: function(item, isSelected) {
-        if (isSelected) {
-          item.loadAndShow();
+      listeners: {
+        'iron-deselect': '_itemDeselected',
+        'iron-select': '_itemSelected'
+      },
+
+      _itemDeselected: function(event) {
+        if (this.hideImmediately) {
+          event.detail.item.hide();
         } else {
-          item.hide();
+          this._lastSelected = event.detail.item;
         }
-        if (this.selectedAttribute) {
-          this.toggleAttribute(this.selectedAttribute, isSelected, item);
-        }
-        this._selectionChange();
-        this.fire('iron-' + (isSelected ? 'select' : 'deselect'), {item: item});
+      },
+
+      _itemSelected: function(event) {
+        this._setLoading(true);
+        event.detail.item.loadAndShow(function() {
+          this._setLoading(false);
+          if (this._lastSelected) {
+            this._lastSelected.hide();
+          }
+        }.bind(this));
       },
 
       _filterItem: function(node) {
@@ -88,10 +117,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         BEGIN DOM-IF LOGIC
         ##################
        */
-      loadAndShow: function() {
+      loadAndShow: function(cb) {
+        var onImportFinished = function() {
+          cb();
+          this._stamp();
+        }.bind(this);
+
         if (!this.loaded && this.path) {
-          this._importHref();
+          this._importHref(onImportFinished);
+        } else {
+          onImportFinished();
         }
+      },
+
+      _stamp: function() {
         if (!this.ctor) {
           this.templatize(this);
         }
@@ -141,17 +180,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ##################
        */
 
-      _importHref: function() {
+      _importHref: function(cb) {
         if (!this.timesFailed) {
           this._path = this.path;
           this.timesFailed = 0;
         }
         var self = this;
-        this.importHref(this._path, function(e) {
+        this.importHref(this._path, function() {
           self.loaded = true;
           self.timesFailed = 0;
-        }, function(e) {
+          cb();
+        }, function() {
           self._path = self.path + '?' + self.timesFailed++;
+          cb();
         });
       },
 

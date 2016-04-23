@@ -26,6 +26,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "web-component-tester": "*",
     "paper-tabs": "PolymerElements/paper-tabs#^1.4.1",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.1.1"
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.1.1",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.1.1"
   }
 }
