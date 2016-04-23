@@ -108,6 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           fakeImport(0, 'foo.html');
           pages.select('foo');
           callbackSuccess();
+          fakeImport(1, 'bar.html');
           pages.select('bar');
           assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
         });
