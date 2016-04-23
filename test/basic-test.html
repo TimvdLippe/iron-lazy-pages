@@ -16,39 +16,101 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../iron-lazy-pages.html">
   </head>
   <body>
 
     <!-- You can use the document as a place to set up your fixtures. -->
-    <iron-lazy-pages></iron-lazy-pages>
+    <test-fixture id="basic">
+      <template>
+        <iron-lazy-pages attr-for-selected="data-route">
+          <template is="iron-lazy-page" data-route="foo" path="foo.html">
+            <span>Foo</span>
+          </template>
+          <template is="iron-lazy-page" data-route="bar" path="bar.html">
+            <span>Bar</span>
+          </template>
+        </iron-lazy-pages>
+      </template>
+    </test-fixture>
 
     <script>
       var myEl = document.querySelector('iron-lazy-pages');
 
       suite('<iron-lazy-pages>', function() {
 
-        test('defines the "author" property', function() {
-          assert.equal(myEl.author.name, 'Dimitri Glazkov');
-          assert.equal(myEl.author.image, 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg');
+        var pages, callbackSuccess, callbackFailure;
+
+        function fakeImport(index, expectedPath) {
+          var element = document.createElement('span');
+          document.head.appendChild(element);
+          pages.items[index].importHref = function(path, onSuccess, onFailure) {
+            assert.equal(path, expectedPath);
+            callbackSuccess = function() {
+              onSuccess({
+                srcElement: element
+              });
+            }
+            callbackFailure = function() {
+              onFailure({
+                srcElement: element
+              });
+            }
+          }
+        }
+
+        function assertStamped(content) {
+          assert.equal(Polymer.dom(pages).firstElementChild.textContent, content);
+        }
+
+        this.timeout(500);
+        setup(function() {
+          pages = fixture('basic');
+        })
+
+        test('lazy-loads the path succesfully', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          assert.equal(pages.loading, true);
+          callbackSuccess();
+          assert.equal(pages.loading, false);
         });
 
-        test('says hello', function() {
-          assert.equal(myEl.sayHello(), 'iron-lazy-pages says, Hello World!');
-
-          var greetings = myEl.sayHello('greetings Earthlings');
-          assert.equal(greetings, 'iron-lazy-pages says, greetings Earthlings');
+        test('increments counter when failed', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackFailure();
+          pages.select(null);
+          fakeImport(0, 'foo.html?0');
+          pages.select('foo');
+          assert.equal(pages.items[0].timesFailed, 1);
         });
 
-        test('fires lasers', function(done) {
-          myEl.addEventListener('iron-lazy-pages-lasers', function(event) {
-            assert.equal(event.detail.sound, 'Pew pew!');
-            done();
-          });
-          myEl.fireLasers();
+        test('stamps child when loaded', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          assertStamped('Foo');
         });
 
+        test('removes previous page when switched', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          fakeImport(1, 'bar.html');
+          pages.select('bar');
+          callbackSuccess();
+          assertStamped('Bar');
+        });
+
+        test('immediately hides when switched', function() {
+          pages.hideImmediately = true;
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          pages.select('bar');
+          assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
+        });
       });
     </script>
 

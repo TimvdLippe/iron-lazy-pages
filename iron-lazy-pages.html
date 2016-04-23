@@ -128,8 +128,6 @@ of HTTP2 is sufficient enough.
   </template>
   <script>
   (function() {
-    var lazyPageNodeName = 'iron-lazy-page';
-
     Polymer({
 
       is: 'iron-lazy-pages',
@@ -191,13 +189,12 @@ of HTTP2 is sufficient enough.
       },
 
       _filterItem: function(node) {
-        return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === lazyPageNodeName;
+        return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === 'iron-lazy-page';
       }
     });
 
-    // Based on implementation of dom-if
     Polymer({
-      is: lazyPageNodeName,
+      is: 'iron-lazy-page',
 
       extends: 'template',
 
@@ -241,7 +238,7 @@ of HTTP2 is sufficient enough.
           if (!this._instance) {
             this._instance = this.stamp();
             var root = this._instance.root;
-            parent.insertBefore(root, this);
+            parent.insertBefore(root, parent.firstElementChild);
           } else {
             var c$ = this._instance._children;
             if (c$ && c$.length) {
@@ -315,4 +312,10 @@ of HTTP2 is sufficient enough.
   })();
   </script>
 
+</dom-module>
+
+<!--
+@element iron-lazy-page
+-->
+<dom-module id="iron-lazy-page">
 </dom-module>
