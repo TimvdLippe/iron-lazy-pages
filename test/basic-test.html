@@ -17,10 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../iron-lazy-pages.html">
+    <link rel="import" href="../../iron-selector/iron-selector.html">
   </head>
   <body>
 
-    <!-- You can use the document as a place to set up your fixtures. -->
     <test-fixture id="basic">
       <template>
         <iron-lazy-pages attr-for-selected="data-route">
@@ -29,6 +29,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
           <template is="iron-lazy-page" data-route="bar" path="bar.html">
             <span>Bar</span>
+          </template>
+          <template is="iron-lazy-page" data-route="nested">
+            <iron-selector selected="0">
+              <section>Something</section>
+              <section>Something Else</section>
+            </iron-selector>
           </template>
         </iron-lazy-pages>
       </template>
@@ -111,6 +117,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           fakeImport(1, 'bar.html');
           pages.select('bar');
           assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
+        });
+
+        test('does not fail with nested iron-selector', function(done) {
+          pages.select('nested');
+          Polymer.dom(pages).firstElementChild.select(1);
+          // Small timeout to trigger the select event
+          setTimeout(function() {
+            Polymer.dom(pages).firstElementChild.select(0);
+            done();
+          }, 10);
         });
       });
     </script>

@@ -171,6 +171,10 @@ of HTTP2 is sufficient enough.
       },
 
       _itemDeselected: function(event) {
+        // Do not listen to possible sub-selectors if these fired and iron-deselect
+        if (event.target !== this) {
+          return;
+        }
         if (this.hideImmediately) {
           event.detail.item._hide();
         } else {
@@ -179,6 +183,10 @@ of HTTP2 is sufficient enough.
       },
 
       _itemSelected: function(event) {
+        // Do not listen to possible sub-selectors if these fired and iron-select
+        if (event.target !== this) {
+          return;
+        }
         this._setLoading(true);
         event.detail.item._loadAndShow(function() {
           this._setLoading(false);
