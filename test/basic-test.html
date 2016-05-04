@@ -54,19 +54,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(path, expectedPath);
             callbackSuccess = function() {
               onSuccess({
-                srcElement: element
+                target: element
               });
             }
             callbackFailure = function() {
               onFailure({
-                srcElement: element
+                target: element
               });
             }
           };
         }
 
-        function assertStamped(content) {
-          assert.equal(Polymer.dom(pages).firstElementChild.textContent, content);
+        function assertStamped(content, i) {
+          i = i || 0;
+          var node = Polymer.dom(pages).firstElementChild;
+          while (i > 0) {
+            node = Polymer.dom(node).nextElementSibling;
+            i--;
+          }
+          assert.equal(node.textContent, content);
         }
 
         this.timeout(500);
@@ -111,6 +117,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         test('immediately hides when switched', function() {
           pages.hideImmediately = true;
+          pages.restamp = true;
           fakeImport(0, 'foo.html');
           pages.select('foo');
           callbackSuccess();
@@ -128,6 +135,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             done();
           }, 10);
         });
+
+        test('after restamping shows element again', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          fakeImport(1, 'bar.html');
+          pages.select('bar');
+          callbackSuccess();
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          assertStamped('Foo', 1);
+        })
       });
     </script>
 
