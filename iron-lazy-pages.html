@@ -162,6 +162,19 @@ of HTTP2 is sufficient enough.
         hideImmediately: {
           type: Boolean,
           value: false
+        },
+
+        /**
+         * When true, elements will be removed from DOM and discarded when
+         * the page path does not match anymore and re-created and added back
+         * to the DOM when the page path matches again.
+         * By default, stamped elements will be hidden but left in the DOM
+         * when a page path does not match anymore, which is generally results
+         * in better performance.
+         */
+        restamp: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -176,7 +189,7 @@ of HTTP2 is sufficient enough.
           return;
         }
         if (this.hideImmediately) {
-          event.detail.item._hide();
+          event.detail.item._hide(this.restamp);
         } else {
           this._lastSelected = event.detail.item;
         }
@@ -229,6 +242,7 @@ of HTTP2 is sufficient enough.
         var onImportFinished = function() {
           cb();
           this._stamp();
+          this._instance._showHideChildren(this.__hideTemplateChildren__);
         }.bind(this);
 
         if (!this.loaded && this.path) {
@@ -306,17 +320,21 @@ of HTTP2 is sufficient enough.
         });
       },
 
-      _hide: function() {
+      _hide: function(restamp) {
         if (this._instance) {
-          var c$ = this._instance._children;
-          if (c$ && c$.length) {
-            // use first child parent, for case when dom-if may have been detached
-            var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);
-            for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
-              parent.removeChild(n);
+          if (restamp) {
+            var c$ = this._instance._children;
+            if (c$ && c$.length) {
+              // use first child parent, for case when dom-if may have been detached
+              var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);
+              for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+                parent.removeChild(n);
+              }
             }
+            this._instance = null;
+          } else {
+            this._instance._showHideChildren(true);
           }
-          this._instance = null;
         }
       }
     })
