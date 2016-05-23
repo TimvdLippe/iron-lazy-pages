@@ -204,7 +204,7 @@ of HTTP2 is sufficient enough.
         event.detail.item._loadAndShow(function() {
           this._setLoading(false);
           if (this._lastSelected) {
-            this._lastSelected._hide();
+            this._lastSelected._hide(this.restamp);
           }
         }.bind(this));
       },
