@@ -115,6 +115,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assertStamped('Bar');
         });
 
+        test('remove the dom node when using restamp', function() {
+          pages.restamp = true;
+          fakeImport(0, 'foo.html');
+          pages.selected = 'foo';
+          callbackSuccess();
+          pages.selected = 'nested';
+          // Should contain the three templates and only one node for the selected page
+          assert.equal(Polymer.dom(pages).children.length, 4);
+        });
+
         test('immediately hides when switched', function() {
           pages.hideImmediately = true;
           pages.restamp = true;
