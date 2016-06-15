@@ -215,7 +215,7 @@ of HTTP2 is sufficient enough.
           if (this._lastSelected) {
             this._lastSelected._hide(this.restamp);
           }
-        }.bind(this));
+        }.bind(this), this.loadAsync);
       },
 
       _filterItem: function(node) {
@@ -247,7 +247,7 @@ of HTTP2 is sufficient enough.
         BEGIN DOM-IF LOGIC
         ##################
        */
-      _loadAndShow: function(cb) {
+      _loadAndShow: function(cb, async) {
         var onImportFinished = function() {
           cb();
           this._stamp();
@@ -255,7 +255,7 @@ of HTTP2 is sufficient enough.
         }.bind(this);
 
         if (!this.loaded && this.path) {
-          this._importHref(onImportFinished);
+          this._importHref(onImportFinished, async);
         } else {
           onImportFinished();
         }
@@ -311,13 +311,12 @@ of HTTP2 is sufficient enough.
         ##################
        */
 
-      _importHref: function(cb) {
+      _importHref: function(cb, async) {
         if (!this.timesFailed) {
           this._path = this.path;
           this.timesFailed = 0;
         }
         var self = this;
-        var loadAsync = Polymer.dom(this).parentNode.loadAsync;
         this.importHref(this._path, function(e) {
           self.loaded = true;
           self.timesFailed = 0;
@@ -327,7 +326,7 @@ of HTTP2 is sufficient enough.
           document.head.removeChild(e.target || e.srcElement);
           self._path = self.path + '?' + self.timesFailed++;
           cb();
-        }, loadAsync);
+        }, async);
       },
 
       _hide: function(restamp) {
