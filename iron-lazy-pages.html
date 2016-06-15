@@ -165,6 +165,15 @@ of HTTP2 is sufficient enough.
         },
 
         /**
+         * If set to true, lazy-loading will not block rendering the page.
+         * This is recommended to speed up rendering when navigating between routes.
+         */
+        async: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
          * When true, elements will be removed from DOM and discarded when
          * the page path does not match anymore and re-created and added back
          * to the DOM when the page path matches again.
@@ -317,7 +326,7 @@ of HTTP2 is sufficient enough.
           document.head.removeChild(e.target || e.srcElement);
           self._path = self.path + '?' + self.timesFailed++;
           cb();
-        });
+        }, this.async);
       },
 
       _hide: function(restamp) {
