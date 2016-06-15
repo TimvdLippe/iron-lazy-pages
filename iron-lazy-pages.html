@@ -165,6 +165,15 @@ of HTTP2 is sufficient enough.
         },
 
         /**
+         * If set to true, lazy-loading will not block rendering the page.
+         * This is recommended to speed up rendering when navigating between routes.
+         */
+        loadAsync: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
          * When true, elements will be removed from DOM and discarded when
          * the page path does not match anymore and re-created and added back
          * to the DOM when the page path matches again.
@@ -206,7 +215,7 @@ of HTTP2 is sufficient enough.
           if (this._lastSelected) {
             this._lastSelected._hide(this.restamp);
           }
-        }.bind(this));
+        }.bind(this), this.loadAsync);
       },
 
       _filterItem: function(node) {
@@ -238,7 +247,7 @@ of HTTP2 is sufficient enough.
         BEGIN DOM-IF LOGIC
         ##################
        */
-      _loadAndShow: function(cb) {
+      _loadAndShow: function(cb, loadAsync) {
         var onImportFinished = function() {
           cb();
           this._stamp();
@@ -246,7 +255,7 @@ of HTTP2 is sufficient enough.
         }.bind(this);
 
         if (!this.loaded && this.path) {
-          this._importHref(onImportFinished);
+          this._importHref(onImportFinished, loadAsync);
         } else {
           onImportFinished();
         }
@@ -302,7 +311,7 @@ of HTTP2 is sufficient enough.
         ##################
        */
 
-      _importHref: function(cb) {
+      _importHref: function(cb, loadAsync) {
         if (!this.timesFailed) {
           this._path = this.path;
           this.timesFailed = 0;
@@ -317,7 +326,7 @@ of HTTP2 is sufficient enough.
           document.head.removeChild(e.target || e.srcElement);
           self._path = self.path + '?' + self.timesFailed++;
           cb();
-        });
+        }, loadAsync);
       },
 
       _hide: function(restamp) {
