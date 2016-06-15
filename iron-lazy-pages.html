@@ -317,6 +317,7 @@ of HTTP2 is sufficient enough.
           this.timesFailed = 0;
         }
         var self = this;
+        var loadAsync = Polymer.dom(this).parentNode.loadAsync;
         this.importHref(this._path, function(e) {
           self.loaded = true;
           self.timesFailed = 0;
@@ -326,7 +327,7 @@ of HTTP2 is sufficient enough.
           document.head.removeChild(e.target || e.srcElement);
           self._path = self.path + '?' + self.timesFailed++;
           cb();
-        }, this.loadAsync);
+        }, loadAsync);
       },
 
       _hide: function(restamp) {
