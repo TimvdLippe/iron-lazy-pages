@@ -247,7 +247,7 @@ of HTTP2 is sufficient enough.
         BEGIN DOM-IF LOGIC
         ##################
        */
-      _loadAndShow: function(cb, async) {
+      _loadAndShow: function(cb, loadAsync) {
         var onImportFinished = function() {
           cb();
           this._stamp();
@@ -255,7 +255,7 @@ of HTTP2 is sufficient enough.
         }.bind(this);
 
         if (!this.loaded && this.path) {
-          this._importHref(onImportFinished, async);
+          this._importHref(onImportFinished, loadAsync);
         } else {
           onImportFinished();
         }
@@ -311,7 +311,7 @@ of HTTP2 is sufficient enough.
         ##################
        */
 
-      _importHref: function(cb, async) {
+      _importHref: function(cb, loadAsync) {
         if (!this.timesFailed) {
           this._path = this.path;
           this.timesFailed = 0;
@@ -326,7 +326,7 @@ of HTTP2 is sufficient enough.
           document.head.removeChild(e.target || e.srcElement);
           self._path = self.path + '?' + self.timesFailed++;
           cb();
-        }, async);
+        }, loadAsync);
       },
 
       _hide: function(restamp) {
