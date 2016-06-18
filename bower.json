@@ -23,13 +23,10 @@
     "iron-selector": "polymerelements/iron-selector#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "polymerelements/iron-component-page#transitiveBehaviors",
+    "iron-component-page": "polymerelements/iron-component-page",
     "web-component-tester": "*",
     "paper-tabs": "PolymerElements/paper-tabs#^1.4.1",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.1.1",
     "paper-spinner": "PolymerElements/paper-spinner#^1.1.1"
-  },
-  "resolutions": {
-    "iron-component-page": "transitiveBehaviors"
   }
 }
