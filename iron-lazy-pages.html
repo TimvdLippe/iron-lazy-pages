@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-selector/iron-selectable.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 
 <!--
 # iron-lazy-pages
@@ -132,7 +133,10 @@ of HTTP2 is sufficient enough.
 
       is: 'iron-lazy-pages',
 
-      behaviors: [Polymer.IronSelectableBehavior],
+      behaviors: [
+        Polymer.IronResizableBehavior,
+        Polymer.IronSelectableBehavior
+      ],
 
       properties: {
         // as the selected page is the only one visible, activateEvent
@@ -187,9 +191,17 @@ of HTTP2 is sufficient enough.
         }
       },
 
+      observers: [
+        '_selectedPageChanged(selected)'
+      ],
+
       listeners: {
         'iron-deselect': '_itemDeselected',
         'iron-select': '_itemSelected'
+      },
+
+      _selectedPageChanged: function() {
+        this.async(this.notifyResize);
       },
 
       _itemDeselected: function(event) {
