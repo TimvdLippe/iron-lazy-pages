@@ -311,23 +311,32 @@ of HTTP2 is sufficient enough.
         ##################
        */
 
-      _importHref: function(cb, loadAsync) {
-        if (!this.timesFailed) {
-          this._path = this.path;
-          this.timesFailed = 0;
+      _importHref: (function() {
+        function removeFromHead(e) {
+          var el = e.target || e.srcElement;
+          if (el.parentNode === document.head) {
+            document.head.removeChild(el);
+          }
         }
-        var self = this;
-        this.importHref(this._path, function(e) {
-          self.loaded = true;
-          self.timesFailed = 0;
-          document.head.removeChild(e.target || e.srcElement);
-          cb();
-        }, function(e) {
-          document.head.removeChild(e.target || e.srcElement);
-          self._path = self.path + '?' + self.timesFailed++;
-          cb();
-        }, loadAsync);
-      },
+
+        return function(cb, loadAsync) {
+          if (!this.timesFailed) {
+            this._path = this.path;
+            this.timesFailed = 0;
+          }
+          var self = this;
+          this.importHref(this._path, function(e) {
+            self.loaded = true;
+            self.timesFailed = 0;
+            removeFromHead(e);
+            cb();
+          }, function(e) {
+            removeFromHead(e);
+            self._path = self.path + '?' + self.timesFailed++;
+            cb();
+          }, loadAsync);
+        }
+      })(),
 
       _hide: function(restamp) {
         if (this._instance) {
