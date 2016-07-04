@@ -156,7 +156,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           fakeImport(0, 'foo.html');
           pages.select('foo');
           assertStamped('Foo', 1);
-        })
+        });
+
+        test('does not throw error when stamping twice', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          fakeImport(1, 'bar.html');
+          pages.select('bar');
+          callbackSuccess();
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          assertStamped('Foo', 0);
+        });
       });
     </script>
 
