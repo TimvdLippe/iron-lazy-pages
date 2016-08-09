@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <test-fixture id="basic">
       <template>
-        <iron-lazy-pages attr-for-selected="data-route">
+        <iron-lazy-pages attr-for-selected="data-route" selected-attribute="selected" selected-class="selected">
           <template is="iron-lazy-page" data-route="foo" path="foo.html">
             <span>Foo</span>
           </template>
@@ -86,6 +86,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           assert.equal(pages.loading, true);
           callbackSuccess();
           assert.equal(pages.loading, false);
+        });
+
+        test('sets selected-attribute on children', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          assert.equal(Polymer.dom(pages).querySelectorAll('[selected]').length, 2);
+          fakeImport(1, 'bar.html');
+          pages.select('bar');
+          callbackSuccess();
+          var selectedItems = Polymer.dom(pages).querySelectorAll('[selected]');
+          assert.equal(selectedItems.length, 2, selectedItems);
+        });
+
+        test('sets selected-class on children', function() {
+          fakeImport(0, 'foo.html');
+          pages.select('foo');
+          callbackSuccess();
+          assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 2);
+          fakeImport(1, 'bar.html');
+          pages.select('bar');
+          callbackSuccess();
+          assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 2);
         });
 
         test('increments counter when failed', function() {

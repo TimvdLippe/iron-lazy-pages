@@ -198,7 +198,7 @@ of HTTP2 is sufficient enough.
           return;
         }
         if (this.hideImmediately) {
-          event.detail.item._hide(this.restamp);
+          event.detail.item._hide(this.restamp, this.selectedAttribute, this.selectedClass);
         } else {
           this._lastSelected = event.detail.item;
         }
@@ -211,9 +211,15 @@ of HTTP2 is sufficient enough.
         }
         this._setLoading(true);
         event.detail.item._loadAndShow(function() {
+          if (this.selectedAttribute) {
+            event.detail.item._toggleAttribute(this.selectedAttribute, true);
+          }
+          if (this.selectedClass) {
+            event.detail.item._toggleClass(this.selectedClass, true);
+          }
           this._setLoading(false);
           if (this._lastSelected) {
-            this._lastSelected._hide(this.restamp);
+            this._lastSelected._hide(this.restamp, this.selectedAttribute, this.selectedClass);
           }
         }.bind(this), this.loadAsync);
       },
@@ -249,8 +255,8 @@ of HTTP2 is sufficient enough.
        */
       _loadAndShow: function(cb, loadAsync) {
         var onImportFinished = function() {
-          cb();
           this._stamp();
+          cb();
           this._instance._showHideChildren(this.__hideTemplateChildren__);
         }.bind(this);
 
@@ -338,7 +344,7 @@ of HTTP2 is sufficient enough.
         }
       })(),
 
-      _hide: function(restamp) {
+      _hide: function(restamp, attribute, clazz) {
         if (this._instance) {
           if (restamp) {
             var c$ = this._instance._children;
@@ -352,6 +358,45 @@ of HTTP2 is sufficient enough.
             this._instance = null;
           } else {
             this._instance._showHideChildren(true);
+            if (attribute) {
+              this._toggleAttribute(attribute, false);
+            }
+            if (clazz) {
+              this._toggleClass(clazz, false);
+            }
+          }
+        }
+      },
+
+      _toggleClass: function(clazz, bool) {
+        this._forEachHtmlElement(function(n) {
+          if (bool) {
+            n.classList.add(clazz);
+          } else {
+            n.classList.remove(clazz);
+          }
+        });
+      },
+
+      _toggleAttribute: function(attribute, bool) {
+        this._forEachHtmlElement(function(n) {
+          if (bool) {
+            n.setAttribute(attribute, '');
+          } else {
+            n.removeAttribute(attribute);
+          }
+        });
+      },
+
+      _forEachHtmlElement: function(func) {
+        if (this._instance) {
+          var c$ = this._instance._children;
+          if (c$ && c$.length) {
+            for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+              if (n instanceof HTMLElement) {
+                func(Polymer.dom(n));
+              }
+            }
           }
         }
       }
