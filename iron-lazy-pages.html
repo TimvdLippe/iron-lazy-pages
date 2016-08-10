@@ -194,7 +194,7 @@ of HTTP2 is sufficient enough.
 
       _itemDeselected: function(event) {
         // Do not listen to possible sub-selectors if these fired and iron-deselect
-        if (event.target !== this) {
+        if (Polymer.dom(event).rootTarget !== this) {
           return;
         }
         if (this.hideImmediately) {
@@ -206,7 +206,7 @@ of HTTP2 is sufficient enough.
 
       _itemSelected: function(event) {
         // Do not listen to possible sub-selectors if these fired and iron-select
-        if (event.target !== this) {
+        if (Polymer.dom(event).rootTarget !== this) {
           return;
         }
         this._setLoading(true);
@@ -221,7 +221,7 @@ of HTTP2 is sufficient enough.
           if (this._lastSelected) {
             this._lastSelected._hide(this.restamp, this.selectedAttribute, this.selectedClass);
           }
-        }.bind(this), this.loadAsync);
+        }.bind(this), this);
       },
 
       _filterItem: function(node) {
@@ -253,41 +253,38 @@ of HTTP2 is sufficient enough.
         BEGIN DOM-IF LOGIC
         ##################
        */
-      _loadAndShow: function(cb, loadAsync) {
+      _loadAndShow: function(cb, parent) {
         var onImportFinished = function() {
-          this._stamp();
+          this._stamp(parent);
           cb();
           this._instance._showHideChildren(this.__hideTemplateChildren__);
         }.bind(this);
 
         if (!this.loaded && this.path) {
-          this._importHref(onImportFinished, loadAsync);
+          this._importHref(onImportFinished, parent.loadAsync);
         } else {
           onImportFinished();
         }
       },
 
-      _stamp: function() {
+      _stamp: function(parentNode) {
         if (!this.ctor) {
           this.templatize(this);
         }
         // Attach logic of dom-if
-        var parentNode = Polymer.dom(this).parentNode;
         if (parentNode) {
           var parent = Polymer.dom(parentNode);
+          var target = parent.firstElementChild;
           if (!this._instance) {
             this._instance = this.stamp();
             var root = this._instance.root;
-            parent.insertBefore(root, parent.firstElementChild);
+            parent.insertBefore(root, target);
           } else {
             var c$ = this._instance._children;
             if (c$ && c$.length) {
-              // Detect case where dom-if was re-attached in new position
-              var lastChild = Polymer.dom(this).previousSibling;
-              if (lastChild !== c$[c$.length-1]) {
-                for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
-                  parent.insertBefore(n, this);
-                }
+              for (var i = c$.length - 1, n; (i > 0) && (n=c$[i]); i--) {
+                parent.insertBefore(n, target);
+                target = n;
               }
             }
           }

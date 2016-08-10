@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style is="custom-style" include="demo-pages-shared-styles"></style>
   </head>
   <body unresolved>
+    <h4 class="centered">Basic usage</h4>
     <demo-snippet class="centered">
       <template>
         <template is="dom-bind">
@@ -38,16 +39,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                            loading="{{loading}}"
                            hide-immediately
                            selected-attribute="selected">
-            <template is="iron-lazy-page" data-route="foo" path="element.html">
-              <span>Foo page</span>
+            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
+              <x-foo></x-foo>
             </template>
-            <template is="iron-lazy-page" data-route="bar" path="bla.html">
-              <span>Bar page</span>
+            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
+              <x-bar></x-bar>
             </template>
             <template is="iron-lazy-page" data-route="baz">
-              <span>Baz page</span>
+              <h3>Baz page</h3>
+              <span>from inline template</span>
             </template>
           </iron-lazy-pages>
+          <paper-spinner active="[[loading]]"></paper-spinner>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h4 class="centered">Distribute templates to light DOM</h4>
+    <demo-snippet class="centered">
+      <template>
+        <template is="dom-bind">
+
+          <dom-module id="x-wrapper">
+            <template>
+              <style>
+                :host {
+                  display: block;
+                }
+              </style>
+              <iron-lazy-pages attr-for-selected="data-route"
+                               selected="{{selected}}"
+                               loading="{{loading}}"
+                               selected-attribute="selected"
+                               hide-immediately>
+                <content select="[is=iron-lazy-page]"></content>
+              </iron-lazy-pages>
+            </template>
+            <script>
+              Polymer({
+                is: 'x-wrapper',
+                properties: {
+                  selected: {
+                    type: String,
+                    notify: true
+                  },
+                  loading: {
+                    type: Boolean,
+                    notify: true
+                  }
+                }
+              });
+            </script>
+          </dom-module>
+
+          <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tab key="foo">Foo</paper-tab>
+            <paper-tab key="bar">Bar</paper-tab>
+            <paper-tab key="baz">Baz!</paper-tab>
+          </paper-tabs>
+
+          <x-wrapper selected="{{route}}" loading="{{loading}}">
+            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
+              <x-foo></x-foo>
+            </template>
+            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
+              <x-bar></x-bar>
+            </template>
+            <template is="iron-lazy-page" data-route="baz">
+              <h3>Baz page</h3>
+              <span>from inline template</span>
+            </template>
+          </x-wrapper>
           <paper-spinner active="[[loading]]"></paper-spinner>
         </template>
       </template>
