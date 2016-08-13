@@ -36,15 +36,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-lazy-pages attr-for-selected="data-route"
                            selected="{{route}}"
                            loading="{{loading}}"
-                           hide-immediately>
+                           hide-immediately
+                           selected-attribute="selected">
             <template is="iron-lazy-page" data-route="foo" path="element.html">
-              Foo page
+              <span>Foo page</span>
             </template>
             <template is="iron-lazy-page" data-route="bar" path="bla.html">
-              Bar page
+              <span>Bar page</span>
             </template>
             <template is="iron-lazy-page" data-route="baz">
-              Baz page
+              <span>Baz page</span>
             </template>
           </iron-lazy-pages>
           <paper-spinner active="[[loading]]"></paper-spinner>
