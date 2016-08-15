@@ -257,7 +257,7 @@ of HTTP2 is sufficient enough.
         var onImportFinished = function() {
           this._stamp(parent);
           cb();
-          this._instance._showHideChildren(this.__hideTemplateChildren__);
+          this._instance._showHideChildren(false);
         }.bind(this);
 
         if (!this.loaded && this.path) {
