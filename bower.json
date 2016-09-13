@@ -20,7 +20,8 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0",
-    "iron-selector": "polymerelements/iron-selector#^1.0.0"
+    "iron-selector": "polymerelements/iron-selector#^1.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.0.0"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page",
