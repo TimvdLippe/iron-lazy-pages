@@ -19,7 +19,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../../paper-tabs/paper-tabs.html">
     <link rel="import" href="../../paper-tabs/paper-tab.html">
     <link rel="import" href="../../paper-spinner/paper-spinner.html">
+    <link rel="import" href="../../neon-animation/animations/fade-in-animation.html">
+    <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
+    <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
+    <link rel="import" href="../../neon-animation/animations/slide-right-animation.html">
     <link rel="import" href="../iron-lazy-pages.html">
+    <link rel="import" href="../neon-lazy-pages.html">
 
     <style is="custom-style" include="demo-pages-shared-styles"></style>
   </head>
@@ -34,12 +39,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tab key='baz'>Baz!</paper-tab>
           </paper-tabs>
 
-          <iron-lazy-pages attr-for-selected="data-route"
-                           selected="{{route}}"
-                           loading="{{loading}}"
-                           hide-immediately
-                           selected-attribute="selected">
-            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
+          <iron-lazy-pages
+              attr-for-selected="data-route"
+              selected="{{route}}"
+              loading="{{loading}}"
+              hide-immediately>
+            <template is="iron-lazy-page" data-route="foo" path="element.html">
               <x-foo></x-foo>
             </template>
             <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
@@ -111,6 +116,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
           </x-wrapper>
           <paper-spinner active="[[loading]]"></paper-spinner>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h4 class="centered">All pages animated the same way</h4>
+    <demo-snippet class="centered">
+      <template>
+        <template is="dom-bind">
+          <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tab key='foo'>Foo</paper-tab>
+            <paper-tab key='bar'>Bar</paper-tab>
+            <paper-tab key='baz'>Baz!</paper-tab>
+          </paper-tabs>
+
+          <neon-lazy-pages
+              attr-for-selected="data-route"
+              selected="{{route}}"
+              loading="{{loading}}"
+              entry-animation="fade-in-animation"
+              exit-animation="fade-out-animation">
+            <template is="iron-lazy-page" data-route="foo" path="element.html">
+              <span>Foo page</span>
+            </template>
+            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
+              <span>Bar page</span>
+            </template>
+            <template is="iron-lazy-page" data-route="baz">
+              <div>
+                <h3>Baz page</h3>
+                <span>from inline template</span>
+              </div>
+            </template>
+          </neon-lazy-pages>
+          <paper-spinner active="[[loading]]"></paper-spinner>
+        </template>
+      </template>
+    </demo-snippet>
+
+    <h4 class="centered">The middle page slides in</h4>
+    <demo-snippet class="centered">
+      <template>
+        <template is="dom-bind">
+          <style>
+            neon-lazy-pages {
+              overflow: hidden;
+              position: relative;
+              display: block;
+              height: 80px;
+            }
+          </style>
+          <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tab key='foo'>Foo</paper-tab>
+            <paper-tab key='bar'>Bar</paper-tab>
+            <paper-tab key='baz'>Baz!</paper-tab>
+          </paper-tabs>
+
+          <neon-lazy-pages
+              attr-for-selected="data-route"
+              selected="{{route}}"
+              loading="{{loading}}"
+              entry-animation="fade-in-animation"
+              exit-animation="fade-out-animation">
+            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
+              <x-foo></x-foo>
+            </template>
+            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
+              <x-bar></x-bar>
+            </template>
+            <template is="iron-lazy-page" data-route="baz">
+              <div>
+                <h3>Baz page</h3>
+                <span>from inline template</span>
+              </div>
+            </template>
+          </neon-lazy-pages>
         </template>
       </template>
     </demo-snippet>
