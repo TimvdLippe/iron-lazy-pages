@@ -9,6 +9,10 @@ addons:
     - google-chrome
     packages:
     - google-chrome-stable
+cache:
+  directories:
+    - $(npm config get prefix)/lib/node_modules/web-component-tester
+    - $(npm config get prefix)/lib/node_modules/bower
 before_script:
 - npm install -g bower web-component-tester
 - bower install
