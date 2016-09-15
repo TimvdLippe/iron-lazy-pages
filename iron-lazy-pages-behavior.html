@@ -1,5 +1,8 @@
+<link rel="import" href="../iron-selector/iron-selectable.html">
+
 <script>
-Polymer.IronLazyPagesBehavior = {
+/** @polymerBehavior Polymer.IronLazyPagesBehavior */
+Polymer.IronLazyPagesBehaviorImpl = {
   properties: {
     // as the selected page is the only one visible, activateEvent
     // is both non-sensical and problematic; e.g. in cases where a user
@@ -101,4 +104,9 @@ Polymer.IronLazyPagesBehavior = {
     throw Error('Did not implement "_hide"!');
   }
 };
+
+Polymer.IronLazyPagesBehavior = [
+  Polymer.IronSelectableBehavior,
+  Polymer.IronLazyPagesBehaviorImpl
+];
 </script>
