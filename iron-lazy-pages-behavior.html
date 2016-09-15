@@ -1,111 +1,112 @@
 <link rel="import" href="../iron-selector/iron-selectable.html">
 
 <script>
-  Polymer.IronLazyPagesBehaviorImpl = {
-    properties: {
-      // as the selected page is the only one visible, activateEvent
-      // is both non-sensical and problematic; e.g. in cases where a user
-      // handler attempts to change the page and the activateEvent
-      // handler immediately changes it back
-      // Disabled for this element.
-      activateEvent: {
-        type: String,
-        value: null
-      },
-
-      /**
-       * Indicates if the page is currently lazy-loading.
-       */
-      loading: {
-        type: Boolean,
-        value: false,
-        notify: true,
-        readOnly: true
-      },
-
-      /**
-       * If set to true, the previous item will be removed immediately upon
-       * switching. By default the item is hidden when the importHref resolves.
-       */
-      hideImmediately: {
-        type: Boolean,
-        value: false
-      },
-
-      /**
-       * If set to true, lazy-loading will not block rendering the page.
-       * This is recommended to speed up rendering when navigating between routes.
-       */
-      loadAsync: {
-        type: Boolean,
-        value: false
-      },
-
-      /**
-       * When true, elements will be removed from DOM and discarded when
-       * the page path does not match anymore and re-created and added back
-       * to the DOM when the page path matches again.
-       * By default, stamped elements will be hidden but left in the DOM
-       * when a page path does not match anymore, which is generally results
-       * in better performance.
-       */
-      restamp: {
-        type: Boolean,
-        value: false
-      }
+  /** @polymerBehavior Polymer.IronLazyPagesBehavior */
+Polymer.IronLazyPagesBehaviorImpl = {
+  properties: {
+    // as the selected page is the only one visible, activateEvent
+    // is both non-sensical and problematic; e.g. in cases where a user
+    // handler attempts to change the page and the activateEvent
+    // handler immediately changes it back
+    // Disabled for this element.
+    activateEvent: {
+      type: String,
+      value: null
     },
 
-    listeners: {
-      'iron-deselect': '_itemDeselected',
-      'iron-select': '_itemSelected'
+    /**
+     * Indicates if the page is currently lazy-loading.
+     */
+    loading: {
+      type: Boolean,
+      value: false,
+      notify: true,
+      readOnly: true
     },
 
-    _itemDeselected: function(event) {
-      // Do not listen to possible sub-selectors if these fired and iron-deselect
-      if (Polymer.dom(event).rootTarget !== this) {
-        return;
-      }
-      if (this.hideImmediately) {
-        event.detail.item._hide(this.restamp, this.selectedAttribute, this.selectedClass);
-      } else {
-        this._lastSelected = event.detail.item;
-      }
+    /**
+     * If set to true, the previous item will be removed immediately upon
+     * switching. By default the item is hidden when the importHref resolves.
+     */
+    hideImmediately: {
+      type: Boolean,
+      value: false
     },
 
-    _itemSelected: function(event) {
-      // Do not listen to possible sub-selectors if these fired and iron-select
-      if (Polymer.dom(event).rootTarget !== this) {
-        return;
-      }
-      this._setLoading(true);
-      event.detail.item._loadAndShow(function(cb) {
-        this._setLoading(false);
-        if (this._lastSelected) {
-          this._callback = cb;
-          this._hide(this._lastSelected, cb)
-        } else {
-          cb();
-        }
-        if (this.selectedAttribute) {
-          event.detail.item._toggleAttribute(this.selectedAttribute, true);
-        }
-        if (this.selectedClass) {
-          event.detail.item._toggleClass(this.selectedClass, true);
-        }
-      }.bind(this), this);
+    /**
+     * If set to true, lazy-loading will not block rendering the page.
+     * This is recommended to speed up rendering when navigating between routes.
+     */
+    loadAsync: {
+      type: Boolean,
+      value: false
     },
 
-    _filterItem: function(node) {
-      return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === 'iron-lazy-page';
-    },
-
-    _hide: function() {
-      throw Error('Did not implement "_hide"!');
+    /**
+     * When true, elements will be removed from DOM and discarded when
+     * the page path does not match anymore and re-created and added back
+     * to the DOM when the page path matches again.
+     * By default, stamped elements will be hidden but left in the DOM
+     * when a page path does not match anymore, which is generally results
+     * in better performance.
+     */
+    restamp: {
+      type: Boolean,
+      value: false
     }
-  };
+  },
 
-  Polymer.IronLazyPagesBehavior = [
-    Polymer.IronSelectableBehavior,
-    Polymer.IronLazyPagesBehaviorImpl
-  ];
+  listeners: {
+    'iron-deselect': '_itemDeselected',
+    'iron-select': '_itemSelected'
+  },
+
+  _itemDeselected: function(event) {
+    // Do not listen to possible sub-selectors if these fired and iron-deselect
+    if (Polymer.dom(event).rootTarget !== this) {
+      return;
+    }
+    if (this.hideImmediately) {
+      event.detail.item._hide(this.restamp, this.selectedAttribute, this.selectedClass);
+    } else {
+      this._lastSelected = event.detail.item;
+    }
+  },
+
+  _itemSelected: function(event) {
+    // Do not listen to possible sub-selectors if these fired and iron-select
+    if (Polymer.dom(event).rootTarget !== this) {
+      return;
+    }
+    this._setLoading(true);
+    event.detail.item._loadAndShow(function(cb) {
+      this._setLoading(false);
+      if (this._lastSelected) {
+        this._callback = cb;
+        this._hide(this._lastSelected, cb)
+      } else {
+        cb();
+      }
+      if (this.selectedAttribute) {
+        event.detail.item._toggleAttribute(this.selectedAttribute, true);
+      }
+      if (this.selectedClass) {
+        event.detail.item._toggleClass(this.selectedClass, true);
+      }
+    }.bind(this), this);
+  },
+
+  _filterItem: function(node) {
+    return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === 'iron-lazy-page';
+  },
+
+  _hide: function() {
+    throw Error('Did not implement "_hide"!');
+  }
+};
+
+Polymer.IronLazyPagesBehavior = [
+  Polymer.IronSelectableBehavior,
+  Polymer.IronLazyPagesBehaviorImpl
+];
 </script>
