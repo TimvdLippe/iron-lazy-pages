@@ -30,8 +30,9 @@ Polymer({
     BEGIN DOM-IF LOGIC
     ##################
    */
-   _loadAndShow: function(cb, parent) {
+   _loadAndShow: function(cb) {
      var self = this;
+     var parent = self.parentNode;
      var onImportFinished = function() {
        cb(function() {
          self._stamp(parent);
