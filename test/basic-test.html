@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         </style>
         <iron-lazy-pages attr-for-selected="data-route" selected-attribute="selected" selected-class="selected">
-          <content select="[is=iron-lazy-page]"></content>
+          <content></content>
         </iron-lazy-pages>
       </template>
       <script>
@@ -179,9 +179,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             pages.selected = 'foo';
             callbackSuccess();
             pages.selected = 'nested';
-            // Should contain only one node for the selected page and one `<content>` node
-            assert.equal(Polymer.dom(pages).children.length, 2);
-            assert.equal(Polymer.dom(pages).children[1].tagName, 'CONTENT');
+            assert.equal(Polymer.dom(pages).children.length, 1);
+            assert.equal(Polymer.dom(pages).children[0].tagName, 'CONTENT');
           });
 
           test('immediately hides when switched', function() {
@@ -200,11 +199,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             pages.select('foo');
             callbackSuccess();
             // <template> is not the `<iron-lazy-pages>` child, expect only stamped item
-            assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 1);
+            var content = Polymer.dom(wrapper).firstElementChild;
+            assert.equal(content.classList.contains('selected'), true);
             fakeImport(1, 'bar.html');
             pages.select('bar');
             callbackSuccess();
-            assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 1);
+            assert.equal(content.classList.contains('selected'), false);
+            assert.equal(Polymer.dom(wrapper).firstElementChild.classList.contains('selected'), true);
           });
 
           test('sets selected-attribute on children', function() {
@@ -212,12 +213,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             pages.select('foo');
             callbackSuccess();
             // <template> is not the `<iron-lazy-pages>` child, expect only stamped item
-            assert.equal(Polymer.dom(pages).querySelectorAll('[selected]').length, 1);
+            var content = Polymer.dom(wrapper).firstElementChild;
+            assert.equal(content.getAttribute('selected'), '');
             fakeImport(1, 'bar.html');
             pages.select('bar');
             callbackSuccess();
-            var selectedItems = Polymer.dom(pages).querySelectorAll('[selected]');
-            assert.equal(selectedItems.length, 1, selectedItems);
+            assert.equal(content.getAttribute('selected'), null);
+            assert.equal(Polymer.dom(wrapper).firstElementChild.getAttribute('selected'), '');
           });
         });
 
@@ -259,10 +261,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           test('does not fail with nested iron-selector', function(done) {
             pages.select('nested');
-            Polymer.dom(pages).firstElementChild.select(1);
+            var shadow = Polymer.dom(pages).querySelector('iron-selector');
+            var shady = Polymer.dom(wrapper).querySelector('iron-selector');
+
+            shadow ? shadow.select(1) : shady.select(1);
             // Small timeout to trigger the select event
             setTimeout(function() {
-              Polymer.dom(pages).firstElementChild.select(0);
+              shadow ? shadow.select(1) : shady.select(1);
               done();
             }, 10);
           });

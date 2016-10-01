@@ -14,6 +14,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-lazy-pages Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+    window.Polymer = window.Polymer || {dom: 'shadow'};
+    </script>
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../paper-tabs/paper-tabs.html">
@@ -77,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                loading="{{loading}}"
                                selected-attribute="selected"
                                hide-immediately>
-                <content select="[is=iron-lazy-page]"></content>
+                <content></content>
               </iron-lazy-pages>
             </template>
             <script>
@@ -103,9 +106,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tab key="baz">Baz!</paper-tab>
           </paper-tabs>
 
+          <style>
+          x-wrapper .foo {
+            color: red;
+          }
+          </style>
+
           <x-wrapper selected="{{route}}" loading="{{loading}}">
             <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
-              <x-foo></x-foo>
+              <x-foo class="foo"></x-foo>
             </template>
             <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
               <x-bar></x-bar>
