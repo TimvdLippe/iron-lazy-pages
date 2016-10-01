@@ -93,7 +93,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
       if (this.selectedClass) {
         event.detail.item._toggleClass(this.selectedClass, true);
       }
-    }.bind(this));
+    }.bind(this), this);
   },
 
   _filterItem: function(node) {
