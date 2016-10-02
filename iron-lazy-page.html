@@ -34,7 +34,7 @@ Polymer({
      var self = this;
      var onImportFinished = function() {
        cb(function() {
-         self._stamp(self.parentNode);
+         self._stamp(Polymer.dom(self).parentNode);
          self._instance._showHideChildren(false);
          return self;
        })
