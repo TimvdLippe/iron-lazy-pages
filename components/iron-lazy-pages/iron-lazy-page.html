@@ -1,0 +1,191 @@
+<!--
+Template element used in conjunction with `iron-lazy-pages`.
+
+@element iron-lazy-page
+-->
+<dom-module id="iron-lazy-page">
+</dom-module>
+<script>
+Polymer({
+  is: 'iron-lazy-page',
+
+  extends: 'template',
+
+  properties: {
+    /**
+     * The url corresponding to the content which should be lazy-loaded.
+     */
+    path: {
+      type: String,
+      value: ''
+    }
+  },
+
+  behaviors: [
+    Polymer.Templatizer
+  ],
+
+  /*
+    ##################
+    BEGIN DOM-IF LOGIC
+    ##################
+   */
+   _loadAndShow: function(cb, parent) {
+     var self = this;
+     var onImportFinished = function() {
+       cb(function() {
+         self._stamp(Polymer.dom(self).parentNode);
+         self._instance._showHideChildren(false);
+         return self;
+       })
+     };
+
+     if (!this.loaded && this.path) {
+       this._importHref(onImportFinished, parent.loadAsync);
+     } else {
+       onImportFinished();
+     }
+   },
+
+  _stamp: function(parentNode) {
+    if (!this.ctor) {
+      this.templatize(this);
+    }
+    // Attach logic of dom-if
+    if (parentNode) {
+      var parent = Polymer.dom(parentNode);
+      var target = parent.firstElementChild;
+      if (!this._instance) {
+        this._instance = this.stamp();
+        var root = this._instance.root;
+        parent.insertBefore(root, target);
+      } else {
+        var c$ = this._instance._children;
+        if (c$ && c$.length) {
+          for (var i = c$.length - 1, n; (i > 0) && (n=c$[i]); i--) {
+            parent.insertBefore(n, target);
+            target = n;
+          }
+        }
+      }
+    }
+  },
+
+  // Implements extension point from Templatizer mixin
+  // Called as side-effect of a host property change, responsible for
+  // notifying parent.<prop> path change on instance
+  _forwardParentProp: function(prop, value) {
+    if (this._instance) {
+      this._instance[prop] = value;
+    }
+  },
+  // Implements extension point from Templatizer
+  // Called as side-effect of a host path change, responsible for
+  // notifying parent.<path> path change on each row
+  _forwardParentPath: function(path, value) {
+    if (this._instance) {
+      this._instance._notifyPath(path, value, true);
+    }
+  },
+
+  /*
+    ##################
+    END DOM-IF LOGIC
+    ##################
+   */
+
+  _importHref: (function() {
+    function removeFromHead(e) {
+      var el = e.target || e.srcElement;
+      if (el.parentNode === document.head) {
+        document.head.removeChild(el);
+      }
+    }
+
+    return function(cb, loadAsync) {
+      if (!this.timesFailed) {
+        this._path = this.path;
+        this.timesFailed = 0;
+      }
+      var self = this;
+      this.importHref(this._path, function(e) {
+        self.loaded = true;
+        self.timesFailed = 0;
+        removeFromHead(e);
+        cb();
+      }, function(e) {
+        removeFromHead(e);
+        self._path = self.path + '?' + self.timesFailed++;
+        cb();
+      }, loadAsync);
+    }
+  })(),
+
+  _hide: function(restamp, attribute, clazz) {
+    if (this._instance) {
+      if (restamp) {
+        var c$ = this._instance._children;
+        if (c$ && c$.length) {
+          // use first child parent, for case when dom-if may have been detached
+          var parent = Polymer.dom(Polymer.dom(c$[0]).parentNode);
+          for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+            parent.removeChild(n);
+          }
+        }
+        this._instance = null;
+      } else {
+        this._instance._showHideChildren(true);
+        if (attribute) {
+          this._toggleAttribute(attribute, false);
+        }
+        if (clazz) {
+          this._toggleClass(clazz, false);
+        }
+      }
+    }
+  },
+
+  get _contentNode() {
+    var node;
+    for (var i=0,l=this._instance._children.length; i<l; i++) {
+      node = this._instance._children[i];
+      if (node instanceof HTMLElement) {
+        return node;
+      }
+    }
+  },
+
+  _toggleClass: function(clazz, bool) {
+    this._forEachHtmlElement(function(n) {
+      if (bool) {
+        n.classList.add(clazz);
+      } else {
+        n.classList.remove(clazz);
+      }
+    });
+  },
+
+  _toggleAttribute: function(attribute, bool) {
+    this._forEachHtmlElement(function(n) {
+      if (bool) {
+        n.setAttribute(attribute, '');
+      } else {
+        n.removeAttribute(attribute);
+      }
+    });
+  },
+
+  _forEachHtmlElement: function(func) {
+    if (this._instance) {
+      var c$ = this._instance._children;
+      if (c$ && c$.length) {
+        for (var i=0, n; (i<c$.length) && (n=c$[i]); i++) {
+          if (n instanceof HTMLElement) {
+            func(Polymer.dom(n));
+          }
+        }
+      }
+    }
+  }
+});
+</script>

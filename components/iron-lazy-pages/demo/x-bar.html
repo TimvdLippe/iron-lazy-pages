@@ -1,0 +1,39 @@
+<link rel="import" href="../../neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../../neon-animation/animations/slide-from-top-animation.html">
+<link rel="import" href="../../neon-animation/animations/slide-up-animation.html">
+
+<dom-module id="x-bar">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+      }
+    </style>
+    <h3>Bar page</h3>
+    <span>from x-bar.html</span>
+  </template>
+  <script>
+    Polymer({
+      is: 'x-bar',
+      behaviors: [Polymer.NeonAnimationBehavior],
+
+      properties: {
+        animationConfig: {
+          value: function() {
+            return {
+              entry: {
+                name: 'slide-from-top-animation',
+                node: this
+              },
+              exit: {
+                name: 'slide-up-animation',
+                node: this
+              }
+            };
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>

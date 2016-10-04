@@ -1,0 +1,42 @@
+{
+  "name": "iron-lazy-pages",
+  "authors": [
+    "Tim van der Lippe <tvanderlippe@gmail.com>"
+  ],
+  "description": "Organizes a set of pages and shows one at a time, lazy-loading all elements.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "container",
+    "lazy-loading"
+  ],
+  "main": "iron-lazy-pages.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "http://timvdlippe.github.io/iron-lazy-pages/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-selector": "polymerelements/iron-selector#^1.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "polymerelements/iron-component-page",
+    "web-component-tester": "*",
+    "paper-tabs": "PolymerElements/paper-tabs#^1.4.1",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.1.1",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.1.1"
+  },
+  "_release": "80e7c6503f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "80e7c6503f622dc96a510e743661047f3457f108"
+  },
+  "_source": "git://github.com/timvdlippe/iron-lazy-pages.git",
+  "_target": "master",
+  "_originalSource": "timvdlippe/iron-lazy-pages",
+  "_direct": true
+}

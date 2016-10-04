@@ -1,0 +1,88 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="iron-lazy-page.html">
+<link rel="import" href="iron-lazy-pages-behavior.html">
+
+<!--
+# neon-lazy-pages
+
+[`<neon-animated-pages>`](https://github.com/PolymerElements/neon-aniamation) with lazy-loading functionality.
+
+@group Iron Elements
+@element neon-lazy-pages
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="neon-lazy-pages">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <content></content>
+  </template>
+  <script>
+    Polymer({
+
+      is: 'neon-lazy-pages',
+
+      behaviors: [
+        Polymer.IronLazyPagesBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
+      properties: {
+        animationConfig: {
+          type: Object,
+          value: function() {
+            return {
+              'entry': [],
+              'exit': []
+            };
+          }
+        },
+
+        entryAnimation: String,
+        exitAnimation: String
+      },
+
+      _hide: function(page, cb) {
+        if (this._isAnimatingOut) {
+          return;
+        }
+        var restamp = this.restamp;
+        var onEnd = function() {
+          page._hide(restamp);
+          this.removeEventListener('neon-animation-finish', onEnd);
+          if (this._callback) {
+            var node = this._callback()._contentNode;
+            this.animationConfig.entry = (node.animationConfig && node.animationConfig.entry) || {
+              node: node,
+              name: this.entryAnimation
+            };
+            this.playAnimation('entry');
+          }
+          this._isAnimatingOut = false;
+        };
+        this.animationConfig.exit = (page._contentNode.animationConfig && page._contentNode.animationConfig.exit) || {
+          node: page._contentNode,
+          name: this.exitAnimation
+        };
+        this._isAnimatingOut = true;
+        this.addEventListener('neon-animation-finish', onEnd);
+        this.playAnimation('exit');
+      }
+    });
+  </script>
+</dom-module>
