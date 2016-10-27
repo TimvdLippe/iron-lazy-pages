@@ -95,6 +95,6 @@ accompanying build process. You can use [vulcanize-with-shards](https://github.c
 your build process to shard all pages into separate HTML imports. This build
 process offers superior performance on users with HTTP1.1.
 
-However, you can seemlessly transition to HTTP2 and utilize the same lazy
+However, you can seamlessly transition to HTTP2 and utilize the same lazy
 loading features. This enables for a smooth transition when the adoption rate
 of HTTP2 is sufficient enough.
