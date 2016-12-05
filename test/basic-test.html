@@ -110,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
 
-        this.timeout(500);
+        this.timeout(20000);
         suite('basic usage', function() {
           setup(function() {
             pages = fixture('basic');
@@ -294,6 +294,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fakeImport(0, 'foo.html');
             pages.select('foo');
             assertStamped('Foo');
+          });
+
+          test('does not stamp late load if no longer selected', function() {
+            var firstSuccessCallback;
+
+            fakeImport(0, 'foo.html');
+            pages.select('foo');
+            firstSuccessCallback = callbackSuccess;
+
+            fakeImport(1, 'bar.html');
+            pages.select('bar');
+            callbackSuccess();
+            firstSuccessCallback();
+
+            assertStamped('Bar');
           });
         }
      });
