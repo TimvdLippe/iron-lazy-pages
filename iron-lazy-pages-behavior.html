@@ -88,12 +88,13 @@ Polymer.IronLazyPagesBehaviorImpl = {
     }
     this._setLoading(true);
     event.detail.item._loadAndShow(function(cb) {
+      var protectedCb = this.selectedItem === event.detail.item ? cb : function(){};
       this._setLoading(false);
       if (this._lastSelected) {
         this._callback = cb;
-        this._hide(this._lastSelected, cb)
+        this._hide(this._lastSelected, protectedCb)
       } else {
-        cb();
+        protectedCb();
       }
       if (this.selectedAttribute) {
         event.detail.item._toggleAttribute(this.selectedAttribute, true);

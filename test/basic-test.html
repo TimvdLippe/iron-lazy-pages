@@ -295,6 +295,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             pages.select('foo');
             assertStamped('Foo');
           });
+
+          test('does not stamp late load if no longer selected', function() {
+            var firstSuccessCallback;
+
+            fakeImport(0, 'foo.html');
+            pages.select('foo');
+            firstSuccessCallback = callbackSuccess;
+
+            fakeImport(1, 'bar.html');
+            pages.select('bar');
+            callbackSuccess();
+            firstSuccessCallback();
+
+            assertStamped('Bar');
+          });
         }
      });
     </script>
