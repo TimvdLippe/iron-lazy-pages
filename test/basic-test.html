@@ -58,174 +58,174 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <slot></slot>
         </iron-lazy-pages>
       </template>
-      <script>
-        Polymer({
-          is: 'x-wrapper'
-        });
-      </script>
     </dom-module>
 
     <script>
-      suite('<iron-lazy-pages>', function() {
+      window.addEventListener('WebComponentsReady', function() {
+        Polymer({
+          is: 'x-wrapper'
+        });
 
-        // iron-lazy-pages and its wrapper
-        var pages, wrapper;
-        // Callbacks of the importHref
-        var callbackSuccess, callbackFailure;
-        // Expected parameters of importHref
-        var expectedRoute, expectedPath;
-        // The actual nodes distributed into the pages element
-        var slotNodes;
+        suite('<iron-lazy-pages>', function() {
+          // iron-lazy-pages and its wrapper
+          var pages, wrapper;
+          // Callbacks of the importHref
+          var callbackSuccess, callbackFailure;
+          // Expected parameters of importHref
+          var expectedRoute, expectedPath;
+          // The actual nodes distributed into the pages element
+          var slotNodes;
 
-        function injectPageLoadingVerifications() {
-          pages._loadPage = function(page, callback) {
-            assert.equal(page.dataset.route, expectedRoute);
-            assert.equal(page.dataset.path, expectedPath);
-            callbackSuccess = function() {
-              page.classList.add('iron-lazy-loaded');
-              callback();
-            };
-            callbackFailure = callback;
-          }
-        }
-
-        function fakeImport(route, path) {
-          expectedRoute = route;
-          expectedPath = path;
-        }
-        function assertStamped(content) {
-          for (var i in slotNodes) {
-            if (slotNodes[i].classList && slotNodes[i].classList.contains('iron-lazy-selected')) {
-              assert.equal(slotNodes[i].textContent, content);
-              return;
+          function injectPageLoadingVerifications() {
+            pages._loadPage = function(page, callback) {
+              assert.equal(page.dataset.route, expectedRoute);
+              assert.equal(page.dataset.path, expectedPath);
+              callbackSuccess = function() {
+                page.classList.add('iron-lazy-loaded');
+                callback();
+              };
+              callbackFailure = callback;
             }
           }
-          assert.fail();
-        }
 
-        this.timeout(500);
-        suite('basic usage', function() {
-          setup(function() {
-            pages = fixture('basic');
-            slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes();
-            injectPageLoadingVerifications();
+          function fakeImport(route, path) {
+            expectedRoute = route;
+            expectedPath = path;
+          }
+          function assertStamped(content) {
+            for (var i in slotNodes) {
+              if (slotNodes[i].classList && slotNodes[i].classList.contains('iron-lazy-selected')) {
+                assert.equal(slotNodes[i].textContent, content);
+                return;
+              }
+            }
+            assert.fail();
+          }
+
+          this.timeout(500);
+          suite('basic usage', function() {
+            setup(function() {
+              pages = fixture('basic');
+              slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes();
+              injectPageLoadingVerifications();
+            });
+
+            runCommonTests();
+
+            test('immediately hides when switched', function() {
+              pages.hideImmediately = true;
+              pages.restamp = true;
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
+            });
           });
 
-          runCommonTests();
+          suite('light DOM distributed templates', function() {
+            setup(function() {
+              wrapper = fixture('light');
+              pages = wrapper.$$('iron-lazy-pages');
+              slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes()[1].assignedNodes();
+              injectPageLoadingVerifications();
+            });
 
-          test('immediately hides when switched', function() {
-            pages.hideImmediately = true;
-            pages.restamp = true;
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
-          });
-        });
+            runCommonTests();
 
-        suite('light DOM distributed templates', function() {
-          setup(function() {
-            wrapper = fixture('light');
-            pages = wrapper.$$('iron-lazy-pages');
-            slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes()[1].assignedNodes();
-            injectPageLoadingVerifications();
-          });
-
-          runCommonTests();
-
-          test('immediately hides when switched', function() {
-            pages.hideImmediately = true;
-            pages.restamp = true;
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            assert.equal(Polymer.dom(wrapper).firstElementChild, pages.items[0]);
-          });
-        });
-
-        function runCommonTests () {
-          test('lazy-loads the path succesfully', function() {
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            assert.equal(pages.loading, true);
-            callbackSuccess();
-            assert.equal(pages.loading, false);
+            test('immediately hides when switched', function() {
+              pages.hideImmediately = true;
+              pages.restamp = true;
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              assert.equal(Polymer.dom(wrapper).firstElementChild, pages.items[0]);
+            });
           });
 
-          test('stamps child when loaded', function() {
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            assertStamped('Foo');
-          });
+          function runCommonTests () {
+            test('lazy-loads the path succesfully', function() {
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              assert.equal(pages.loading, true);
+              callbackSuccess();
+              assert.equal(pages.loading, false);
+            });
 
-          test('removes previous page when switched', function() {
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            assertStamped('Bar');
-          });
+            test('stamps child when loaded', function() {
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              assertStamped('Foo');
+            });
 
-          test('does not fail with nested iron-selector', function(done) {
-            pages.select('nested');
-            var shadow = Polymer.dom(pages).querySelector('iron-selector');
-            var shady = Polymer.dom(wrapper).querySelector('iron-selector');
+            test('removes previous page when switched', function() {
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              callbackSuccess();
+              assertStamped('Bar');
+            });
 
-            shadow ? shadow.select(1) : shady.select(1);
-            // Small timeout to trigger the select event
-            setTimeout(function() {
+            test('does not fail with nested iron-selector', function(done) {
+              pages.select('nested');
+              var shadow = Polymer.dom(pages).querySelector('iron-selector');
+              var shady = Polymer.dom(wrapper).querySelector('iron-selector');
+
               shadow ? shadow.select(1) : shady.select(1);
-              done();
-            }, 10);
-          });
+              // Small timeout to trigger the select event
+              setTimeout(function() {
+                shadow ? shadow.select(1) : shady.select(1);
+                done();
+              }, 10);
+            });
 
-          test('after restamping shows element again', function() {
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            assertStamped('Foo');
-          });
+            test('after restamping shows element again', function() {
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              callbackSuccess();
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              assertStamped('Foo');
+            });
 
-          test('does not throw error when stamping twice', function() {
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            assertStamped('Foo');
-          });
+            test('does not throw error when stamping twice', function() {
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              callbackSuccess();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              callbackSuccess();
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              assertStamped('Foo');
+            });
 
-          test('does not stamp late load if no longer selected', function() {
-            var firstSuccessCallback;
+            test('does not stamp late load if no longer selected', function() {
+              var firstSuccessCallback;
 
-            fakeImport('foo', 'foo.html');
-            pages.select('foo');
-            firstSuccessCallback = callbackSuccess;
+              fakeImport('foo', 'foo.html');
+              pages.select('foo');
+              firstSuccessCallback = callbackSuccess;
 
-            fakeImport('bar', 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            firstSuccessCallback();
+              fakeImport('bar', 'bar.html');
+              pages.select('bar');
+              callbackSuccess();
+              firstSuccessCallback();
 
-            assertStamped('Bar');
-          });
-        }
-     });
+              assertStamped('Bar');
+            });
+          }
+        });
+      });
     </script>
 
   </body>

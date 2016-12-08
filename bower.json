@@ -30,7 +30,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
     "paper-spinner": "PolymerElements/paper-spinner#2.0-preview",
     "test-fixture": "PolymerElements/test-fixture#custom-elements-v1",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
+    "webcomponentsjs": "webcomponents/custom-elements#master",
     "web-animations-js": "web-animations/web-animations-js#^2.2.0"
   },
   "resolutions": {
