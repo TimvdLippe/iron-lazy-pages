@@ -4,7 +4,7 @@
   "authors": [
     "Tim van der Lippe <tvanderlippe@gmail.com>"
   ],
-  "description": "Organizes a set of pages and shows one at a time, lazy-loading all elements.",
+  "description": "Organizes a set of pages and shows one at a time, lazy-loading all element definitions.",
   "keywords": [
     "web-component",
     "polymer",
@@ -19,15 +19,23 @@
     "/test/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.0.0",
-    "iron-selector": "polymerelements/iron-selector#^1.0.0",
-    "neon-animation": "PolymerElements/neon-animation#^1.0.0"
+    "polymer": "Polymer/polymer#2.0-preview",
+    "iron-selector": "PolymerElements/iron-selector#2.0-preview",
+    "neon-animation": "PolymerElements/neon-animation#2.0-preview"
   },
   "devDependencies": {
-    "iron-component-page": "polymerelements/iron-component-page",
-    "web-component-tester": "*",
-    "paper-tabs": "PolymerElements/paper-tabs#^1.4.1",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.1.1",
-    "paper-spinner": "PolymerElements/paper-spinner#^1.1.1"
+    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
+    "web-component-tester": "^4.0.0",
+    "paper-tabs": "PolymerElements/paper-tabs#2.0-preview",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
+    "paper-spinner": "PolymerElements/paper-spinner#2.0-preview",
+    "test-fixture": "PolymerElements/test-fixture#custom-elements-v1",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#v1",
+    "web-animations-js": "web-animations/web-animations-js#^2.2.0"
+  },
+  "resolutions": {
+    "test-fixture": "custom-elements-v1",
+    "webcomponentsjs": "v1",
+    "polymer": "2.0-preview"
   }
 }

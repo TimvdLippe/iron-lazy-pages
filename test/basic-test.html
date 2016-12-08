@@ -24,18 +24,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <test-fixture id="basic">
       <template>
         <iron-lazy-pages attr-for-selected="data-route" selected-attribute="selected" selected-class="selected">
-          <template is="iron-lazy-page" data-route="foo" path="foo.html">
-            <span>Foo</span>
-          </template>
-          <template is="iron-lazy-page" data-route="bar" path="bar.html">
-            <span>Bar</span>
-          </template>
-          <template is="iron-lazy-page" data-route="nested">
-            <iron-selector selected="0">
-              <section>Something</section>
-              <section>Something Else</section>
-            </iron-selector>
-          </template>
+          <span data-route="foo" data-path="foo.html">Foo</span>
+          <span data-route="bar" data-path="bar.html">Bar</span>
+          <iron-selector data-route="nested" selected="0">
+            <section>Something</section>
+            <section>Something Else</section>
+          </iron-selector>
         </iron-lazy-pages>
       </template>
     </test-fixture>
@@ -43,18 +37,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <test-fixture id="light">
       <template>
         <x-wrapper>
-          <template is="iron-lazy-page" data-route="foo" path="foo.html">
-            <span class="foo">Foo</span>
-          </template>
-          <template is="iron-lazy-page" data-route="bar" path="bar.html">
-            <span class="bar">Bar</span>
-          </template>
-          <template is="iron-lazy-page" data-route="nested">
-            <iron-selector selected="0">
-              <section>Something</section>
-              <section>Something Else</section>
-            </iron-selector>
-          </template>
+          <span class="foo" data-route="foo" data-path="foo.html">Foo</span>
+          <span class="bar" data-route="bar" data-path="bar.html">Bar</span>
+          <iron-selector data-route="nested" selected="0">
+            <section>Something</section>
+            <section>Something Else</section>
+          </iron-selector>
         </x-wrapper>
       </template>
     </test-fixture>
@@ -67,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         </style>
         <iron-lazy-pages attr-for-selected="data-route" selected-attribute="selected" selected-class="selected">
-          <content></content>
+          <slot></slot>
         </iron-lazy-pages>
       </template>
       <script>
@@ -80,88 +68,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
       suite('<iron-lazy-pages>', function() {
 
-        var pages, wrapper, callbackSuccess, callbackFailure;
+        // iron-lazy-pages and its wrapper
+        var pages, wrapper;
+        // Callbacks of the importHref
+        var callbackSuccess, callbackFailure;
+        // Expected parameters of importHref
+        var expectedRoute, expectedPath;
+        // The actual nodes distributed into the pages element
+        var slotNodes;
 
-        function fakeImport(index, expectedPath) {
-          var element = document.createElement('span');
-          document.head.appendChild(element);
-          pages.items[index].importHref = function(path, onSuccess, onFailure) {
-            assert.equal(path, expectedPath);
+        function injectPageLoadingVerifications() {
+          pages._loadPage = function(page, callback) {
+            assert.equal(page.dataset.route, expectedRoute);
+            assert.equal(page.dataset.path, expectedPath);
             callbackSuccess = function() {
-              onSuccess({
-                target: element
-              });
+              page.classList.add('iron-lazy-loaded');
+              callback();
             };
-            callbackFailure = function() {
-              onFailure({
-                target: element
-              });
-            }
-          };
+            callbackFailure = callback;
+          }
+        }
+
+        function fakeImport(route, path) {
+          expectedRoute = route;
+          expectedPath = path;
         }
         function assertStamped(content) {
-          var n = Polymer.dom(pages).children.length;
-          var node = Polymer.dom(pages).firstElementChild;
-          for (var i = 0; i < n; i++) {
-            if (node.tagName !== 'TEMPLATE' && node.tagName !== 'CONTENT') {
-              assert.equal(node.style.display, node.textContent === content ? '' : 'none');
+          for (var i in slotNodes) {
+            if (slotNodes[i].classList && slotNodes[i].classList.contains('iron-lazy-selected')) {
+              assert.equal(slotNodes[i].textContent, content);
+              return;
             }
-            node = Polymer.dom(node).nextElementSibling;
           }
+          assert.fail();
         }
 
         this.timeout(500);
         suite('basic usage', function() {
           setup(function() {
             pages = fixture('basic');
+            slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes();
+            injectPageLoadingVerifications();
           });
 
           runCommonTests();
 
-          test('remove the dom node when using restamp', function() {
-            pages.restamp = true;
-            fakeImport(0, 'foo.html');
-            pages.selected = 'foo';
-            callbackSuccess();
-            pages.selected = 'nested';
-            // Should contain the three templates and only one node for the selected page
-            assert.equal(Polymer.dom(pages).children.length, 4);
-          });
-
           test('immediately hides when switched', function() {
             pages.hideImmediately = true;
             pages.restamp = true;
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             assert.equal(Polymer.dom(pages).firstElementChild, pages.items[0]);
-          });
-
-          test('sets selected-class on children', function() {
-            fakeImport(0, 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            // expect both <template> and stamped item
-            assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 2);
-            fakeImport(1, 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            assert.equal(Polymer.dom(pages).querySelectorAll('.selected').length, 2);
-          });
-
-          test('sets selected-attribute on children', function() {
-            fakeImport(0, 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            // expect both <template> and stamped item
-            assert.equal(Polymer.dom(pages).querySelectorAll('[selected]').length, 2);
-            fakeImport(1, 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            var selectedItems = Polymer.dom(pages).querySelectorAll('[selected]');
-            assert.equal(selectedItems.length, 2, selectedItems);
           });
         });
 
@@ -169,91 +129,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           setup(function() {
             wrapper = fixture('light');
             pages = wrapper.$$('iron-lazy-pages');
+            slotNodes = pages.shadowRoot.querySelector('slot').assignedNodes()[1].assignedNodes();
+            injectPageLoadingVerifications();
           });
 
           runCommonTests();
 
-          test('remove the dom node when using restamp', function() {
-            pages.restamp = true;
-            fakeImport(0, 'foo.html');
-            pages.selected = 'foo';
-            callbackSuccess();
-            pages.selected = 'nested';
-            assert.equal(Polymer.dom(pages).children.length, 1);
-            assert.equal(Polymer.dom(pages).children[0].tagName, 'CONTENT');
-          });
-
           test('immediately hides when switched', function() {
             pages.hideImmediately = true;
             pages.restamp = true;
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             assert.equal(Polymer.dom(wrapper).firstElementChild, pages.items[0]);
-          });
-
-          test('sets selected-class on children', function() {
-            fakeImport(0, 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            // <template> is not the `<iron-lazy-pages>` child, expect only stamped item
-            var content = Polymer.dom(wrapper).firstElementChild;
-            assert.equal(content.classList.contains('selected'), true);
-            fakeImport(1, 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            assert.equal(content.classList.contains('selected'), false);
-            assert.equal(Polymer.dom(wrapper).firstElementChild.classList.contains('selected'), true);
-          });
-
-          test('sets selected-attribute on children', function() {
-            fakeImport(0, 'foo.html');
-            pages.select('foo');
-            callbackSuccess();
-            // <template> is not the `<iron-lazy-pages>` child, expect only stamped item
-            var content = Polymer.dom(wrapper).firstElementChild;
-            assert.equal(content.getAttribute('selected'), '');
-            fakeImport(1, 'bar.html');
-            pages.select('bar');
-            callbackSuccess();
-            assert.equal(content.getAttribute('selected'), null);
-            assert.equal(Polymer.dom(wrapper).firstElementChild.getAttribute('selected'), '');
           });
         });
 
         function runCommonTests () {
           test('lazy-loads the path succesfully', function() {
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             assert.equal(pages.loading, true);
             callbackSuccess();
             assert.equal(pages.loading, false);
           });
 
-          test('increments counter when failed', function() {
-            fakeImport(0, 'foo.html');
-            pages.select('foo');
-            callbackFailure();
-            pages.select(null);
-            fakeImport(0, 'foo.html?0');
-            pages.select('foo');
-            assert.equal(pages.items[0].timesFailed, 1);
-          });
-
           test('stamps child when loaded', function() {
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
             assertStamped('Foo');
           });
 
           test('removes previous page when switched', function() {
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             callbackSuccess();
             assertStamped('Bar');
@@ -273,25 +187,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           test('after restamping shows element again', function() {
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             callbackSuccess();
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             assertStamped('Foo');
           });
 
           test('does not throw error when stamping twice', function() {
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             callbackSuccess();
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             callbackSuccess();
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             assertStamped('Foo');
           });
@@ -299,11 +213,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           test('does not stamp late load if no longer selected', function() {
             var firstSuccessCallback;
 
-            fakeImport(0, 'foo.html');
+            fakeImport('foo', 'foo.html');
             pages.select('foo');
             firstSuccessCallback = callbackSuccess;
 
-            fakeImport(1, 'bar.html');
+            fakeImport('bar', 'bar.html');
             pages.select('bar');
             callbackSuccess();
             firstSuccessCallback();

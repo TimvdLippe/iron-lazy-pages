@@ -8,7 +8,6 @@ of the BSD license.  See the LICENSE file for details.
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
-<link rel="import" href="iron-lazy-page.html">
 <link rel="import" href="iron-lazy-pages-behavior.html">
 
 <!--
@@ -27,9 +26,12 @@ of the BSD license.  See the LICENSE file for details.
       :host {
         display: block;
       }
+      :host > ::slotted(:not(.iron-lazy-selected)) {
+        display: none !important;
+      }
     </style>
 
-    <content></content>
+    <slot></slot>
   </template>
   <script>
     Polymer({
@@ -56,31 +58,37 @@ of the BSD license.  See the LICENSE file for details.
         exitAnimation: String
       },
 
-      _hide: function(page, cb) {
+      _show: function(page) {
         if (this._isAnimatingOut) {
           return;
         }
-        var restamp = this.restamp;
         var onEnd = function() {
-          page._hide(restamp);
-          this.removeEventListener('neon-animation-finish', onEnd);
-          if (this._callback) {
-            var node = this._callback()._contentNode;
-            this.animationConfig.entry = (node.animationConfig && node.animationConfig.entry) || {
-              node: node,
-              name: this.entryAnimation
-            };
-            this.playAnimation('entry');
+          if (this._lastSelected) {
+            this._lastSelected.classList.remove('iron-lazy-selected');
           }
+          this.removeEventListener('neon-animation-finish', onEnd);
+          // Even though page should be shown, it could be that a new element
+          // was shown during the animation.
+          var node = this.selectedItem;
+          node.classList.add('iron-lazy-selected');
+          this.animationConfig.entry = (node.animationConfig && node.animationConfig.entry) || {
+            node: node,
+            name: this.entryAnimation
+          };
+          this.playAnimation('entry');
           this._isAnimatingOut = false;
-        };
-        this.animationConfig.exit = (page._contentNode.animationConfig && page._contentNode.animationConfig.exit) || {
-          node: page._contentNode,
-          name: this.exitAnimation
-        };
-        this._isAnimatingOut = true;
-        this.addEventListener('neon-animation-finish', onEnd);
-        this.playAnimation('exit');
+        }.bind(this);
+        if (this._lastSelected) {
+          this.animationConfig.exit = (this._lastSelected.animationConfig && this._lastSelected.animationConfig.exit) || {
+            node: this._lastSelected,
+            name: this.exitAnimation
+          };
+          this._isAnimatingOut = true;
+          this.addEventListener('neon-animation-finish', onEnd);
+          this.playAnimation('exit');
+        } else {
+          onEnd();
+        }
       }
     });
   </script>

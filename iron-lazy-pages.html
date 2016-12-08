@@ -7,7 +7,6 @@ This software may be modified and distributed under the terms
 of the BSD license.  See the LICENSE file for details.
 -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="iron-lazy-page.html">
 <link rel="import" href="iron-lazy-pages-behavior.html">
 
 <!--
@@ -122,9 +121,12 @@ of HTTP2 is sufficient enough.
       :host {
         display: block;
       }
+      :host > ::slotted(:not(.iron-lazy-selected)) {
+        display: none !important;
+      }
     </style>
 
-    <content></content>
+    <slot></slot>
   </template>
   <script>
     Polymer({
@@ -135,9 +137,12 @@ of HTTP2 is sufficient enough.
         Polymer.IronLazyPagesBehavior
       ],
 
-      _hide: function(page, cb) {
-        page._hide(this.restamp, this.selectedAttribute, this.selectedClass);
-        cb && cb();
+      _show: function(page) {
+        if (this._lastSelected) {
+          this._lastSelected.classList.remove('iron-lazy-selected');
+        }
+
+        page.classList.add('iron-lazy-selected');
       }
     });
   </script>
