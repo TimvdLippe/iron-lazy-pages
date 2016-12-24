@@ -95,7 +95,9 @@ Polymer.IronLazyPagesBehaviorImpl = {
    * Provide extension point for tests, to make the element actually testable.
    */
   _loadPage: function(page, onFinished) {
-    Polymer.Base.importHref(page.dataset.path, function() {
+    var parentNode = this.parentNode && this.parentNode.host;
+    var url = parentNode.resolveUrl && parentNode.resolveUrl(page.dataset.path) || page.dataset.path;
+    Polymer.Base.importHref(url, function() {
       page.classList.add('iron-lazy-loaded');
       onFinished();
     }, onFinished);
