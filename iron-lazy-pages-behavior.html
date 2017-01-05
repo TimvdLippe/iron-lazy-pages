@@ -48,6 +48,16 @@ Polymer.IronLazyPagesBehaviorImpl = {
      */
     loadAsync: {
       type: Boolean,
+      value: true
+    },
+
+    /**
+     * If set to true, all paths will be resolved as absolute path. Defaults to
+     * false, meaning that paths are resolved relative to the file location
+     * of the parent of `iron-lazy-pages`.
+     */
+    absolute: {
+      type: Boolean,
       value: false
     }
   },
@@ -95,9 +105,12 @@ Polymer.IronLazyPagesBehaviorImpl = {
    * Provide extension point for tests, to make the element actually testable.
    */
   _loadPage: function(page, onFinished) {
-    // When not loaded in shadow dom, `this.parentNode.host` is undefined. Resort back to the parentNode
-    var parentNode = this.parentNode && this.parentNode.host || this.parentNode;
-    var url = parentNode.resolveUrl && parentNode.resolveUrl(page.dataset.path) || page.dataset.path;
+    var url = page.dataset.path;
+    if (!this.absolute) {
+      // When not loaded in shadow dom, `this.parentNode.host` is undefined. Resort back to the parentNode
+      var parentNode = this.parentNode && this.parentNode.host || this.parentNode;
+      url = parentNode.resolveUrl && parentNode.resolveUrl(page.dataset.path) || page.dataset.path;
+    }
     Polymer.Base.importHref(url, function() {
       page.classList.add('iron-lazy-loaded');
       onFinished();

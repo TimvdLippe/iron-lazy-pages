@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-lazy-pages Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../custom-elements/custom-elements.min.js"></script>
     <script>
     window.Polymer = window.Polymer || {dom: 'shadow'};
     </script>
@@ -47,6 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tabs selected="{{route}}" attr-for-selected='key'>
               <paper-tab key='foo'>Foo</paper-tab>
               <paper-tab key='bar'>Bar</paper-tab>
+              <paper-tab key='dom-if'>Dom-if</paper-tab>
               <paper-tab key='baz'>Baz!</paper-tab>
             </paper-tabs>
 
@@ -54,9 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 attr-for-selected="data-route"
                 selected="{{route}}"
                 loading="{{loading}}"
-                hide-immediately>
+                hide-immediately
+                absolute>
               <x-foo data-route="foo" data-path="x-foo.html"></x-foo>
               <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
+              <dom-if data-route="dom-if">
+                <template is="dom-if">
+                  <span>Dom-if compatibility!</span>
+                </template>
+              </dom-if>
               <div data-route="baz">
                 <h3>Baz page</h3>
                 <span>from inline template</span>
@@ -79,7 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                          selected="{{selected}}"
                          loading="{{loading}}"
                          selected-attribute="selected"
-                         hide-immediately>
+                         hide-immediately
+                         absolute>
           <slot></slot>
         </iron-lazy-pages>
       </template>
@@ -147,7 +155,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 selected="{{route}}"
                 loading="{{loading}}"
                 entry-animation="fade-in-animation"
-                exit-animation="fade-out-animation">
+                exit-animation="fade-out-animation"
+                absolute>
               <span data-route="foo" data-path="x-foo.html">Foo page</span>
               <span data-route="bar" data-path="x-bar.html">Bar page</span>
               <div data-route="baz">
@@ -185,7 +194,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 selected="{{route}}"
                 loading="{{loading}}"
                 entry-animation="fade-in-animation"
-                exit-animation="fade-out-animation">
+                exit-animation="fade-out-animation"
+                absolute>
               <x-foo data-route="foo" data-path="x-foo.html"></x-foo>
               <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
               <div data-route="baz">

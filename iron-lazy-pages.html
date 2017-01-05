@@ -139,10 +139,20 @@ of HTTP2 is sufficient enough.
 
       _show: function(page) {
         if (this._lastSelected) {
-          this._lastSelected.classList.remove('iron-lazy-selected');
+          if (this._lastSelected['if']) {
+            this._lastSelected['if'] = false;
+          } else {
+            this._lastSelected.classList.remove('iron-lazy-selected');
+          }
         }
 
-        page.classList.add('iron-lazy-selected');
+        // dom-if compatibility
+        console.log(page)
+        if (page['if']) {
+          page['if'] = true;
+        } else {
+          page.classList.add('iron-lazy-selected');
+        }
       }
     });
   </script>
