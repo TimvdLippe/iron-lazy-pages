@@ -203,5 +203,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
       </template>
     </demo-snippet>
+
+    <h4 class="centered">Selective restamp usage</h4>
+    <demo-snippet class="centered">
+      <template>
+        <template is="dom-bind">
+          <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tab key='foo'>Foo</paper-tab>
+            <paper-tab key='bar'>Bar</paper-tab>
+          </paper-tabs>
+
+          <iron-lazy-pages
+              attr-for-selected="data-route"
+              selected="{{route}}"
+              loading="{{loading}}"
+              hide-immediately>
+            <template is="iron-lazy-page" data-route="foo" restamp>
+              Leaving this tab and coming back will loose input value due to restamp<br/>
+              <input type="text"/>
+            </template>
+            <template is="iron-lazy-page" data-route="bar">
+              Leaving this tab and coming back will keep input value<br/>
+              <input type="text"/>
+            </template>
+          </iron-lazy-pages>
+          <paper-spinner active="[[loading]]"></paper-spinner>
+        </template>
+      </template>
+    </demo-snippet>
   </body>
 </html>
