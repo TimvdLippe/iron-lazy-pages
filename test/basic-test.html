@@ -128,6 +128,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             assert.equal(Polymer.dom(pages).children.length, 4);
           });
 
+          test('remove only dom node of templates with restamp', function() {
+            Polymer.dom(pages).querySelector('template[data-route=foo]').restamp = true;
+            fakeImport(0, 'foo.html');
+            pages.selected = 'foo';
+            callbackSuccess();
+            // Should contain the three templates and only one node for foo page
+            assert.equal(Polymer.dom(pages).children.length, 4);
+
+            fakeImport(1, 'bar.html');
+            pages.selected = 'bar';
+            callbackSuccess();
+            // Should contain the three templates and only one node for bar page, foo page content is removed.
+            assert.equal(Polymer.dom(pages).children.length, 4);
+
+            pages.selected = 'foo';
+            // Should contain the three templates and tow nodes for foo page, bar page is not restamped
+            assert.equal(Polymer.dom(pages).children.length, 5);
+          });
+
           test('immediately hides when switched', function() {
             pages.hideImmediately = true;
             pages.restamp = true;

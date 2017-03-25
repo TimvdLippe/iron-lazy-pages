@@ -28,6 +28,19 @@ Polymer({
     path: {
       type: String,
       value: ''
+    },
+
+    /**
+     * When true, elements will be removed from DOM and discarded when
+     * the page path does not match anymore and re-created and added back
+     * to the DOM when the page path matches again.
+     * By default, stamped elements will be hidden but left in the DOM
+     * when a page path does not match anymore, which is generally results
+     * in better performance.
+     */
+    restamp: {
+      type: Boolean,
+      value: false
     }
   },
 
@@ -133,7 +146,7 @@ Polymer({
 
   _hide: function(restamp, attribute, clazz) {
     if (this._instance) {
-      if (restamp) {
+      if (restamp || this.restamp) {
         var c$ = this._instance._children;
         if (c$ && c$.length) {
           // use first child parent, for case when dom-if may have been detached
