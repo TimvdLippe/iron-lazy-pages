@@ -9,7 +9,7 @@ of the BSD license.  See the LICENSE file for details.
 <link rel="import" href="../iron-selector/iron-selectable.html">
 
 <script>
-/** @polymerBehavior Polymer.IronLazyPagesBehavior */
+/** @polymerBehavior */
 Polymer.IronLazyPagesBehaviorImpl = {
   properties: {
     // as the selected page is the only one visible, activateEvent
@@ -114,6 +114,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
   }
 };
 
+/** @polymerBehavior */
 Polymer.IronLazyPagesBehavior = [
   Polymer.IronSelectableBehavior,
   Polymer.IronLazyPagesBehaviorImpl
