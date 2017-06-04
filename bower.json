@@ -19,23 +19,18 @@
     "/test/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0-preview",
-    "iron-selector": "PolymerElements/iron-selector#2.0-preview",
-    "neon-animation": "PolymerElements/neon-animation#2.0-preview"
+    "polymer": "Polymer/polymer#^2.0.0",
+    "iron-selector": "PolymerElements/iron-selector#^2.0.0",
+    "neon-animation": "PolymerElements/neon-animation#^2.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-    "web-component-tester": "^4.0.0",
-    "paper-tabs": "PolymerElements/paper-tabs#2.0-preview",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
-    "paper-spinner": "PolymerElements/paper-spinner#2.0-preview",
-    "test-fixture": "PolymerElements/test-fixture#custom-elements-v1",
-    "webcomponentsjs": "webcomponents/custom-elements#master",
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0",
+    "paper-tabs": "PolymerElements/paper-tabs#^2.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
+    "test-fixture": "PolymerElements/test-fixture#3.0.0-rc.1",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "web-animations-js": "web-animations/web-animations-js#^2.2.0"
-  },
-  "resolutions": {
-    "test-fixture": "custom-elements-v1",
-    "webcomponentsjs": "v1",
-    "polymer": "2.0-preview"
   }
 }
