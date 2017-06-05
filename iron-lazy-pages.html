@@ -68,15 +68,7 @@ Fetching is only performed once, e.g. switching from `foo` to `bar` to `foo` wil
 
       behaviors: [
         Polymer.IronLazyPagesBehavior
-      ],
-
-      _show: function(page) {
-        if (this._lastSelected) {
-          this._lastSelected.classList.remove('iron-lazy-selected');
-        }
-
-        page.classList.add('iron-lazy-selected');
-      }
+      ]
     });
   </script>
 </dom-module>

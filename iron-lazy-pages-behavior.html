@@ -95,8 +95,12 @@ Polymer.IronLazyPagesBehaviorImpl = {
     }, onFinished);
   },
 
-  _show: function() {
-    throw Error('Did not implement "_hide"!');
+  _show: function(page) {
+    if (this._lastSelected) {
+      this._lastSelected.classList.remove('iron-lazy-selected');
+    }
+
+    page.classList.add('iron-lazy-selected');
   }
 };
 
