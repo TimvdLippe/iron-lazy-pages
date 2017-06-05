@@ -6,6 +6,7 @@ All rights reserved.
 This software may be modified and distributed under the terms
 of the BSD license.  See the LICENSE file for details.
 -->
+<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-selector/iron-selectable.html">
 
 <script>
@@ -39,28 +40,6 @@ Polymer.IronLazyPagesBehaviorImpl = {
     hideImmediately: {
       type: Boolean,
       value: false
-    },
-
-    /**
-     * If set to true, lazy-loading will not block rendering the page.
-     * This is recommended to speed up rendering when navigating between routes.
-     */
-    loadAsync: {
-      type: Boolean,
-      value: false
-    },
-
-    /**
-     * When true, elements will be removed from DOM and discarded when
-     * the page path does not match anymore and re-created and added back
-     * to the DOM when the page path matches again.
-     * By default, stamped elements will be hidden but left in the DOM
-     * when a page path does not match anymore, which is generally results
-     * in better performance.
-     */
-    restamp: {
-      type: Boolean,
-      value: false
     }
   },
 
@@ -75,7 +54,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
       return;
     }
     if (this.hideImmediately) {
-      event.detail.item._hide(this.restamp, this.selectedAttribute, this.selectedClass);
+      event.detail.item.classList.remove('iron-lazy-selected');
     } else {
       this._lastSelected = event.detail.item;
     }
@@ -86,31 +65,42 @@ Polymer.IronLazyPagesBehaviorImpl = {
     if (Polymer.dom(event).rootTarget !== this) {
       return;
     }
+    var self = this;
     this._setLoading(true);
-    event.detail.item._loadAndShow(function(cb) {
-      var protectedCb = this.selectedItem === event.detail.item ? cb : function(){};
-      this._setLoading(false);
-      if (this._lastSelected) {
-        this._callback = cb;
-        this._hide(this._lastSelected, protectedCb)
-      } else {
-        protectedCb();
+    var page = event.detail.item;
+    var onFinished = function() {
+      self._setLoading(false);
+      if (self.selectedItem === page) {
+        self._show(page);
       }
-      if (this.selectedAttribute) {
-        event.detail.item._toggleAttribute(this.selectedAttribute, true);
-      }
-      if (this.selectedClass) {
-        event.detail.item._toggleClass(this.selectedClass, true);
-      }
-    }.bind(this), this);
+    };
+
+    if (!page.classList.contains('iron-lazy-loaded') && page.dataset.path) {
+      this._loadPage(page, onFinished);
+    } else {
+      onFinished();
+    }
   },
 
-  _filterItem: function(node) {
-    return !this._excludedLocalNames[node.localName] || node.getAttribute('is') === 'iron-lazy-page';
+  /**
+   * Provide extension point for tests, to make the element actually testable.
+   */
+  _loadPage: function(page, onFinished) {
+    // When not loaded in shadow dom, `this.parentNode.host` is undefined. Resort back to the parentNode
+    var parentNode = this.parentNode && this.parentNode.host || this.parentNode;
+    var url = parentNode.resolveUrl && parentNode.resolveUrl(page.dataset.path) || page.dataset.path;
+    Polymer.Base.importHref(url, function() {
+      page.classList.add('iron-lazy-loaded');
+      onFinished();
+    }, onFinished);
   },
 
-  _hide: function() {
-    throw Error('Did not implement "_hide"!');
+  _show: function(page) {
+    if (this._lastSelected) {
+      this._lastSelected.classList.remove('iron-lazy-selected');
+    }
+
+    page.classList.add('iron-lazy-selected');
   }
 };
 

@@ -22,14 +22,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../../paper-tabs/paper-tabs.html">
     <link rel="import" href="../../paper-tabs/paper-tab.html">
     <link rel="import" href="../../paper-spinner/paper-spinner.html">
-    <link rel="import" href="../../neon-animation/animations/fade-in-animation.html">
-    <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
-    <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
-    <link rel="import" href="../../neon-animation/animations/slide-right-animation.html">
     <link rel="import" href="../iron-lazy-pages.html">
-    <link rel="import" href="../neon-lazy-pages.html">
 
-    <style is="custom-style" include="demo-pages-shared-styles">
+    <style is="custom-style" include="demo-pages-shared-styles"></style>
+    <style>
+      .centered {
+        margin: 20px auto;
+        max-width: 750px;
+      }
     </style>
   </head>
   <body unresolved>
@@ -37,97 +37,94 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h4 class="centered">Basic usage</h4>
     <demo-snippet class="centered">
       <template>
-        <template is="dom-bind">
-          <paper-tabs selected="{{route}}" attr-for-selected='key'>
-            <paper-tab key='foo'>Foo</paper-tab>
-            <paper-tab key='bar'>Bar</paper-tab>
-            <paper-tab key='baz'>Baz!</paper-tab>
-          </paper-tabs>
+        <dom-bind>
+          <template is="dom-bind">
+            <paper-tabs selected="{{route}}" attr-for-selected='key'>
+              <paper-tab key='foo'>Foo</paper-tab>
+              <paper-tab key='bar'>Bar</paper-tab>
+              <paper-tab key='baz'>Baz!</paper-tab>
+            </paper-tabs>
 
-          <iron-lazy-pages
-              attr-for-selected="data-route"
-              selected="{{route}}"
-              loading="{{loading}}"
-              hide-immediately>
-            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
-              <x-foo></x-foo>
-            </template>
-            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
-              <x-bar></x-bar>
-            </template>
-            <template is="iron-lazy-page" data-route="baz">
-              <h3>Baz page</h3>
-              <span>from inline template</span>
-            </template>
-          </iron-lazy-pages>
-          <paper-spinner active="[[loading]]"></paper-spinner>
-        </template>
+            <div>
+              <iron-lazy-pages
+                  attr-for-selected="data-route"
+                  selected="{{route}}"
+                  loading="{{loading}}"
+                  hide-immediately>
+                <x-foo data-route="foo" data-path="x-foo.html"></x-foo>
+                <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
+                <div data-route="baz">
+                  <h3>Baz page</h3>
+                  <span>from inline template</span>
+                </div>
+              </iron-lazy-pages>
+              <paper-spinner active="[[loading]]"></paper-spinner>
+            </div>
+          </template>
+        </dom-bind>
       </template>
     </demo-snippet>
 
-    <h4 class="centered">Distribute templates to light DOM</h4>
+    <dom-module id="x-wrapper">
+      <template>
+        <style>
+          :host {
+            display: block;
+          }
+        </style>
+        <iron-lazy-pages attr-for-selected="data-route"
+                         selected="{{selected}}"
+                         loading="{{loading}}"
+                         selected-attribute="selected"
+                         hide-immediately>
+          <slot></slot>
+        </iron-lazy-pages>
+      </template>
+      <script>
+        Polymer({
+          is: 'x-wrapper',
+          properties: {
+            selected: {
+              type: String,
+              notify: true
+            },
+            loading: {
+              type: Boolean,
+              notify: true
+            }
+          }
+        });
+      </script>
+    </dom-module>
+
+    <h2 class="centered">Distribute templates to light DOM</h2>
     <demo-snippet class="centered">
       <template>
-        <template is="dom-bind">
+        <dom-bind>
+          <template is="dom-bind">
+            <paper-tabs selected="{{route}}" attr-for-selected='key'>
+              <paper-tab key="foo">Foo</paper-tab>
+              <paper-tab key="bar">Bar</paper-tab>
+              <paper-tab key="baz">Baz!</paper-tab>
+            </paper-tabs>
 
-          <dom-module id="x-wrapper">
-            <template>
-              <style>
-                :host {
-                  display: block;
-                }
-              </style>
-              <iron-lazy-pages attr-for-selected="data-route"
-                               selected="{{selected}}"
-                               loading="{{loading}}"
-                               selected-attribute="selected"
-                               hide-immediately>
-                <content></content>
-              </iron-lazy-pages>
-            </template>
-            <script>
-              Polymer({
-                is: 'x-wrapper',
-                properties: {
-                  selected: {
-                    type: String,
-                    notify: true
-                  },
-                  loading: {
-                    type: Boolean,
-                    notify: true
-                  }
-                }
-              });
-            </script>
-          </dom-module>
+            <style>
+              x-wrapper .foo {
+                color: red;
+              }
+            </style>
 
-          <paper-tabs selected="{{route}}" attr-for-selected='key'>
-            <paper-tab key="foo">Foo</paper-tab>
-            <paper-tab key="bar">Bar</paper-tab>
-            <paper-tab key="baz">Baz!</paper-tab>
-          </paper-tabs>
-
-          <style>
-          x-wrapper .foo {
-            color: red;
-          }
-          </style>
-
-          <x-wrapper selected="{{route}}" loading="{{loading}}">
-            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
-              <x-foo class="foo"></x-foo>
-            </template>
-            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
-              <x-bar></x-bar>
-            </template>
-            <template is="iron-lazy-page" data-route="baz">
-              <h3>Baz page</h3>
-              <span>from inline template</span>
-            </template>
-          </x-wrapper>
-          <paper-spinner active="[[loading]]"></paper-spinner>
-        </template>
+            <x-wrapper selected="{{route}}" loading="{{loading}}">
+              <x-foo class="foo" data-route="foo" data-path="x-foo.html"></x-foo>
+              <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
+              <div data-route="baz">
+                <h3>Baz page</h3>
+                <span>from inline template</span>
+              </div>
+            </x-wrapper>
+            <paper-spinner active="[[loading]]"></paper-spinner>
+          </template>
+        </dom-bind>
       </template>
     </demo-snippet>
 
@@ -145,93 +142,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               selected="{{route}}"
               loading="{{loading}}"
               hide-immediately>
-            <template is="iron-lazy-page" data-route="foo" restamp>
+            <template is="dom-if" data-route="foo" restamp>
               Leaving this tab and coming back will loose input value due to restamp<br/>
               <input type="text"/>
             </template>
-            <template is="iron-lazy-page" data-route="bar">
+            <template is="dom-if" data-route="bar">
               Leaving this tab and coming back will keep input value<br/>
               <input type="text"/>
             </template>
           </iron-lazy-pages>
           <paper-spinner active="[[loading]]"></paper-spinner>
-        </template>
-      </template>
-    </demo-snippet>
-
-    <h2 class="centered">&lt;neon-lazy-pages&gt;</h2>
-
-    <h4 class="centered">All pages animated the same way</h4>
-    <demo-snippet class="centered">
-      <template>
-        <template is="dom-bind">
-          <paper-tabs selected="{{route}}" attr-for-selected='key'>
-            <paper-tab key='foo'>Foo</paper-tab>
-            <paper-tab key='bar'>Bar</paper-tab>
-            <paper-tab key='baz'>Baz!</paper-tab>
-          </paper-tabs>
-
-          <neon-lazy-pages
-              attr-for-selected="data-route"
-              selected="{{route}}"
-              loading="{{loading}}"
-              entry-animation="fade-in-animation"
-              exit-animation="fade-out-animation">
-            <template is="iron-lazy-page" data-route="foo" path="element.html">
-              <span>Foo page</span>
-            </template>
-            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
-              <span>Bar page</span>
-            </template>
-            <template is="iron-lazy-page" data-route="baz">
-              <div>
-                <h3>Baz page</h3>
-                <span>from inline template</span>
-              </div>
-            </template>
-          </neon-lazy-pages>
-          <paper-spinner active="[[loading]]"></paper-spinner>
-        </template>
-      </template>
-    </demo-snippet>
-
-    <h4 class="centered">The middle page slides in</h4>
-    <demo-snippet class="centered">
-      <template>
-        <template is="dom-bind">
-          <style>
-            neon-lazy-pages {
-              overflow: hidden;
-              position: relative;
-              display: block;
-              height: 80px;
-            }
-          </style>
-          <paper-tabs selected="{{route}}" attr-for-selected='key'>
-            <paper-tab key='foo'>Foo</paper-tab>
-            <paper-tab key='bar'>Bar</paper-tab>
-            <paper-tab key='baz'>Baz!</paper-tab>
-          </paper-tabs>
-
-          <neon-lazy-pages
-              attr-for-selected="data-route"
-              selected="{{route}}"
-              loading="{{loading}}"
-              entry-animation="fade-in-animation"
-              exit-animation="fade-out-animation">
-            <template is="iron-lazy-page" data-route="foo" path="x-foo.html">
-              <x-foo></x-foo>
-            </template>
-            <template is="iron-lazy-page" data-route="bar" path="x-bar.html">
-              <x-bar></x-bar>
-            </template>
-            <template is="iron-lazy-page" data-route="baz">
-              <div>
-                <h3>Baz page</h3>
-                <span>from inline template</span>
-              </div>
-            </template>
-          </neon-lazy-pages>
         </template>
       </template>
     </demo-snippet>
