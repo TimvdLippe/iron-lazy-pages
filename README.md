@@ -22,17 +22,29 @@ Example:
 <custom-element-demo>
   <template>
     <link rel="import" href="iron-lazy-pages.html">
-    <next-code-block></next-code-block>
+    <link rel="import" href="../paper-tabs/paper-tabs.html">
+    <link rel="import" href="../paper-tabs/paper-tab.html">
+    <dom-bind>
+      <template is="dom-bind">
+        <paper-tabs selected="{{route}}" attr-for-selected='key'>
+          <paper-tab key='foo'>Foo</paper-tab>
+          <paper-tab key='bar'>Bar</paper-tab>
+          <paper-tab key='baz'>Baz!</paper-tab>
+        </paper-tabs>
+        <next-code-block></next-code-block>
+      </template>
+    </dom-bind>
   </template>
 </custom-element-demo>
 ```
 -->
 ```html
 <iron-lazy-pages attr-for-selected="data-route" selected="{{route}}">
-  <section data-route="foo" data-path="demo/x-foo.html">
-    Foo page
-  </section>
+  <x-foo data-route="foo" data-path="demo/x-foo.html"></x-foo>
   <x-bar data-route="bar" data-path="demo/x-bar.html"></x-bar>
+  <section data-route="baz">
+    Inline element baz.
+  </section>
 </iron-lazy-pages>
 ```
 

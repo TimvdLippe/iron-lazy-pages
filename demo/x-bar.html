@@ -1,6 +1,4 @@
-<link rel="import" href="../../neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="../../neon-animation/animations/slide-from-top-animation.html">
-<link rel="import" href="../../neon-animation/animations/slide-up-animation.html">
+<link rel="import" href="../../polymer/polymer.html">
 
 <dom-module id="x-bar">
   <template>
@@ -15,25 +13,7 @@
   </template>
   <script>
     Polymer({
-      is: 'x-bar',
-      behaviors: [Polymer.NeonAnimationBehavior],
-
-      properties: {
-        animationConfig: {
-          value: function() {
-            return {
-              entry: {
-                name: 'slide-from-top-animation',
-                node: this
-              },
-              exit: {
-                name: 'slide-up-animation',
-                node: this
-              }
-            };
-          }
-        }
-      }
+      is: 'x-bar'
     });
   </script>
 </dom-module>
