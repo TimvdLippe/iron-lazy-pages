@@ -10,7 +10,7 @@ of the BSD license.  See the LICENSE file for details.
 <link rel="import" href="../iron-selector/iron-selectable.html">
 
 <script>
-/** @polymerBehavior Polymer.IronLazyPagesBehavior */
+/** @polymerBehavior */
 Polymer.IronLazyPagesBehaviorImpl = {
   properties: {
     // as the selected page is the only one visible, activateEvent
@@ -38,15 +38,6 @@ Polymer.IronLazyPagesBehaviorImpl = {
      * switching. By default the item is hidden when the importHref resolves.
      */
     hideImmediately: {
-      type: Boolean,
-      value: false
-    },
-
-    /**
-     * If set to true, lazy-loading will not block rendering the page.
-     * This is recommended to speed up rendering when navigating between routes.
-     */
-    loadAsync: {
       type: Boolean,
       value: false
     }
@@ -109,6 +100,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
   }
 };
 
+/** @polymerBehavior */
 Polymer.IronLazyPagesBehavior = [
   Polymer.IronSelectableBehavior,
   Polymer.IronLazyPagesBehaviorImpl
