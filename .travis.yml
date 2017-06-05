@@ -10,10 +10,10 @@ addons:
     packages:
     - google-chrome-stable
 cache:
+  yarn: true
   directories:
-    - $(npm config get prefix)/lib/node_modules/web-component-tester
-    - $(npm config get prefix)/lib/node_modules/bower
+    - $HOME/.yarn-cache
 before_script:
-- npm install -g bower web-component-tester
-- bower install
-script: xvfb-run wct
+- yarn global add polymer-cli
+- polymer install --variants
+script: xvfb-run polymer test
