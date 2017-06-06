@@ -40,6 +40,25 @@ Polymer.IronLazyPagesBehaviorImpl = {
     hideImmediately: {
       type: Boolean,
       value: false
+    },
+
+    /**
+     * The set of excluded elements where the key is the `localName`
+     * of the element that will be ignored from the item list.
+     *
+     * @default {template: 1}
+     */
+    _excludedLocalNames: {
+      type: Object,
+      value: function() {
+        return {
+          // 'template': 1,
+          'dom-bind': 1,
+          // Explicitly opt-in for `dom-if`
+          // 'dom-if': 1,
+          'dom-repeat': 1,
+        };
+      }
     }
   },
 
@@ -54,6 +73,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
       return;
     }
     if (this.hideImmediately) {
+      event.detail.item['if'] = false;
       event.detail.item.classList.remove('iron-lazy-selected');
     } else {
       this._lastSelected = event.detail.item;
@@ -97,10 +117,12 @@ Polymer.IronLazyPagesBehaviorImpl = {
 
   _show: function(page) {
     if (this._lastSelected) {
+      this._lastSelected['if'] = false;
       this._lastSelected.classList.remove('iron-lazy-selected');
     }
 
     page.classList.add('iron-lazy-selected');
+    page['if'] = true;
   }
 };
 

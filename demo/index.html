@@ -43,6 +43,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-tab key='foo'>Foo</paper-tab>
               <paper-tab key='bar'>Bar</paper-tab>
               <paper-tab key='baz'>Baz!</paper-tab>
+              <paper-tab key='dom-if'>dom-if</paper-tab>
             </paper-tabs>
 
             <div>
@@ -57,6 +58,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <h3>Baz page</h3>
                   <span>from inline template</span>
                 </div>
+                <template is="dom-if" data-route="dom-if">
+                  Another inline template inside a dom-if
+                </template>
               </iron-lazy-pages>
               <paper-spinner active="[[loading]]"></paper-spinner>
             </div>
