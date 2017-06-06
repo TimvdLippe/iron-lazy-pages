@@ -44,6 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-tab key='bar'>Bar</paper-tab>
               <paper-tab key='baz'>Baz!</paper-tab>
               <paper-tab key='dom-if'>dom-if</paper-tab>
+              <paper-tab key='dom-if-input'>dom-if with input</paper-tab>
             </paper-tabs>
 
             <div>
@@ -60,6 +61,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
                 <template is="dom-if" data-route="dom-if">
                   Another inline template inside a dom-if
+                  <label>This is a text field that, if the page is deselected, keeps it text <input type="text"/></label>
+                </template>
+                <template is="dom-if" data-route="dom-if-input" restamp>
+                  <label>This is a text field that, if the page is deselected, is cleared due to restamp <input type="text"/></label>
                 </template>
               </iron-lazy-pages>
               <paper-spinner active="[[loading]]"></paper-spinner>

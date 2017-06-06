@@ -62,6 +62,18 @@ Polymer.IronLazyPagesBehaviorImpl = {
     }
   },
 
+  attached: function() {
+    this.addEventListener('dom-change', function(event) {
+      var target = event.target;
+      if (target['if']) {
+        var sibling = target;
+        while ((sibling = sibling.previousElementSibling) != this.__previousSibling) {
+          sibling.classList.add('iron-lazy-selected');
+        }
+      }
+    }.bind(this));
+  },
+
   listeners: {
     'iron-deselect': '_itemDeselected',
     'iron-select': '_itemSelected'
@@ -123,6 +135,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
 
     page.classList.add('iron-lazy-selected');
     page['if'] = true;
+    this.__previousSibling = page.previousElementSibling;
   }
 };
 
