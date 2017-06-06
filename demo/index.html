@@ -65,6 +65,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
                 <template is="dom-if" data-route="dom-if-input" restamp>
                   <label>This is a text field that, if the page is deselected, is cleared due to restamp <input type="text"/></label>
+                  <div>
+                    <label>Click this button to test if nested dom-ifs work <input type="checkbox" checked="{{hostChecked::change}}" /></label>
+                    <template is="dom-if" if="[[hostChecked]]">
+                      <div>
+                        Tests
+                      </div>
+                    </template>
+                  </div>
                 </template>
               </iron-lazy-pages>
               <paper-spinner active="[[loading]]"></paper-spinner>

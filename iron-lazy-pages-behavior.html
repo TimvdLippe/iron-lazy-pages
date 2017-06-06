@@ -64,6 +64,10 @@ Polymer.IronLazyPagesBehaviorImpl = {
 
   attached: function() {
     this.addEventListener('dom-change', function(event) {
+      // Do not listen to possible sub-selectors if these fired and iron-deselect
+      if (event.target.parentNode !== this) {
+        return;
+      }
       var target = event.target;
       if (target['if']) {
         var sibling = target;
