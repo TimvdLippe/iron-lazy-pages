@@ -87,8 +87,16 @@ Polymer.IronLazyPagesBehaviorImpl = {
    */
   _loadPage: function(page, onFinished) {
     // When not loaded in shadow dom, `this.parentNode.host` is undefined. Resort back to the parentNode
-    var parentNode = this.parentNode && this.parentNode.host || this.parentNode;
-    var url = parentNode.resolveUrl && parentNode.resolveUrl(page.dataset.path) || page.dataset.path;
+    var parentHost = this.parentNode;
+    while (parentHost && parentHost.nodeName !== '#document-fragment') {
+      parentHost = parentHost.parentNode;
+    }
+    var url;
+    if (parentHost && parentHost.host &&  parentHost.host.resolveUrl) {
+      url = parentHost.host.resolveUrl(page.dataset.path);
+    } else {
+      url = page.dataset.path;
+    }
     Polymer.Base.importHref(url, function() {
       page.classList.add('iron-lazy-loaded');
       onFinished();
