@@ -106,6 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-tab key="foo">Foo</paper-tab>
               <paper-tab key="bar">Bar</paper-tab>
               <paper-tab key="baz">Baz!</paper-tab>
+              <paper-tab key="dom-if">Dom-if!</paper-tab>
             </paper-tabs>
 
             <style>
@@ -121,6 +122,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <h3>Baz page</h3>
                 <span>from inline template</span>
               </div>
+              <template is="dom-if" data-route="dom-if">
+                Leaving this tab and coming back will keep input value<br/>
+                <input type="text"/>
+              </template>
             </x-wrapper>
             <paper-spinner active="[[loading]]"></paper-spinner>
           </template>
