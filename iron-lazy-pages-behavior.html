@@ -40,7 +40,20 @@ Polymer.IronLazyPagesBehaviorImpl = {
     hideImmediately: {
       type: Boolean,
       value: false
+    },
+        /* Override IronSelectableBehavior's _excludedLocalNames to allow templates to be selected as pages */
+    _excludedLocalNames: {
+      type: Object,
+      value: function() {
+        return {
+          //'template': 1,
+          'dom-bind': 1,
+          //'dom-if': 1,
+          'dom-repeat': 1,
+        };
+      }
     }
+
   },
 
   listeners: {
