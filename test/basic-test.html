@@ -30,6 +30,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <section>Something</section>
             <section>Something Else</section>
           </iron-selector>
+          <dom-if data-route="dom-if">
+            <template is="dom-if">
+              <div class="dom-if-stamped"></div>
+            </template>
+          </dom-if>
         </iron-lazy-pages>
       </template>
     </test-fixture>
@@ -77,6 +82,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         commonTests();
+
+        test('sets dom-if to true', function(done) {
+          pages.addEventListener('iron-items-changed', function() {
+            assert.isTrue(pages.items[3]['if']);
+            // Polymer 2 version
+            if (pages.items[3].__render) {
+              pages.addEventListener('dom-change', function() {
+                assert.notEqual(pages.querySelector('.dom-if-stamped', null));
+                done();
+              })
+            // Polymer 1 version
+            } else {
+              done();
+            }
+          });
+          Polymer.Base.importHref = function(url, onSuccess) {
+            onSuccess();
+          };
+          pages.selected = 'dom-if';
+        });
 
         suite('light-dom', function() {
           setup(function() {

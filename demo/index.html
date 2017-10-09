@@ -43,6 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-tab key='foo'>Foo</paper-tab>
               <paper-tab key='bar'>Bar</paper-tab>
               <paper-tab key='baz'>Baz!</paper-tab>
+              <paper-tab key='dom-if'>dom-if</paper-tab>
+              <paper-tab key='dom-if-input'>dom-if with input</paper-tab>
             </paper-tabs>
 
             <div>
@@ -57,6 +59,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <h3>Baz page</h3>
                   <span>from inline template</span>
                 </div>
+                <template is="dom-if" data-route="dom-if">
+                  Another inline template inside a dom-if
+                  <label>This is a text field that, if the page is deselected, keeps it text <input type="text"/></label>
+                </template>
+                <template is="dom-if" data-route="dom-if-input" restamp>
+                  <label>This is a text field that, if the page is deselected, is cleared due to restamp <input type="text"/></label>
+                  <div>
+                    <label>Click this button to test if nested dom-ifs work <input type="checkbox" checked="{{hostChecked::change}}" /></label>
+                    <template is="dom-if" if="[[hostChecked]]">
+                      <div>
+                        Tests
+                      </div>
+                    </template>
+                  </div>
+                </template>
               </iron-lazy-pages>
               <paper-spinner active="[[loading]]"></paper-spinner>
             </div>

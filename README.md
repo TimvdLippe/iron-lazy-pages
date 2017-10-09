@@ -56,3 +56,24 @@ will be hidden.
 
 Fetching is only performed once, e.g. switching from `foo` to `bar` to `foo` will fetch
 `foo` once and show `foo` twice.
+
+## `<dom-if>` support
+
+You can also add `<dom-if>` as a route to enable restamping:
+
+```html
+<iron-lazy-pages
+    attr-for-selected="data-route"
+    selected="{{route}}"
+    loading="{{loading}}"
+    hide-immediately>
+  <template is="dom-if" data-route="foo" restamp>
+    Leaving this tab and coming back will loose input value due to restamp<br/>
+    <input type="text"/>
+  </template>
+  <template is="dom-if" data-route="bar">
+    Leaving this tab and coming back will keep input value<br/>
+    <input type="text"/>
+  </template>
+</iron-lazy-pages>
+```
