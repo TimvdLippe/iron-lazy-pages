@@ -5,6 +5,8 @@
 
 [`<iron-pages>`](https://github.com/PolymerElements/iron-pages) with lazy-loading functionality.
 
+**Looking for 3.0-preview version of this element? Check out [issue 63](https://github.com/TimvdLippe/iron-lazy-pages/issues/63)**
+
 ## Lazy-loading pages
 
 Big applications have a lot of pages. On first load, loading all page elements
