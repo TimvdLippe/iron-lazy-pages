@@ -1,0 +1,28 @@
+{
+  "name": "@polymer/iron-lazy-pages",
+  "flat": true,
+  "version": "3.0.0",
+  "description": "Organizes a set of pages and shows one at a time, lazy-loading all element definitions.",
+  "contributors": [
+    "Tim van der Lippe <tvanderlippe@gmail.com>"
+  ],
+  "keywords": [
+    "web-component",
+    "polymer",
+    "container",
+    "lazy-loading"
+  ],
+  "main": "iron-lazy-pages.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "http://timvdlippe.github.io/iron-lazy-pages/",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1",
+    "@polymer/iron-selector": "^3.0.0-pre.1",
+    "@polymer/iron-demo-helpers": "^3.0.0-pre.1",
+    "@polymer/paper-tabs": "^3.0.0-pre.1",
+    "@polymer/paper-spinner": "^3.0.0-pre.1",
+    "marked": "~0.3.3",
+    "prism": "*"
+  },
+  "devDependencies": {}
+}

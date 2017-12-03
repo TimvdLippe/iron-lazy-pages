@@ -1,5 +1,3 @@
-<link rel="import" href="../../polymer/polymer.html">
-
 <dom-module id="x-bar">
   <template>
     <style>
@@ -11,9 +9,11 @@
     <h3>Bar page</h3>
     <span>from x-bar.html</span>
   </template>
-  <script>
-    Polymer({
-      is: 'x-bar'
-    });
+  <script type="module">
+  import '../../../@polymer/polymer/polymer.js';
+  import { Polymer } from '../../../@polymer/polymer/lib/legacy/polymer-fn.js';
+  Polymer({
+    is: 'x-bar'
+  });
   </script>
 </dom-module>
