@@ -89,11 +89,11 @@ You can also add `<dom-if>` as a route to enable restamping:
     loading="{{loading}}"
     hide-immediately>
   <template is="dom-if" data-route="foo" restamp>
-    <br>Leaving this tab and coming back will loose input value due to restamp<br/>
+    Leaving this tab and coming back will loose input value due to restamp<br>
     <input type="text"/>
   </template>
   <template is="dom-if" data-route="bar">
-    <br>Leaving this tab and coming back will keep input value<br/>
+    Leaving this tab and coming back will keep input value<br>
     <input type="text"/>
   </template>
 </iron-lazy-pages>
