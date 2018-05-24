@@ -6,14 +6,13 @@ addons:
   firefox: latest
   apt:
     sources:
-    - google-chrome
+      - google-chrome
     packages:
-    - google-chrome-stable
+      - google-chrome-stable
 cache:
   yarn: true
   directories:
     - $HOME/.yarn-cache
-before_script:
-- yarn global add polymer-cli
-- polymer install --variants
-script: xvfb-run polymer test
+before_script: yarn global add polymer-cli
+script: xvfb-run polymer test --module-resolution=node --npm
+

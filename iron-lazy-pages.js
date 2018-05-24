@@ -1,15 +1,12 @@
-<!--
+/**
 @license
 Copyright (C) 2016, Tim van der Lippe
 All rights reserved.
 
 This software may be modified and distributed under the terms
 of the BSD license.  See the LICENSE file for details.
--->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="iron-lazy-pages-behavior.html">
-
-<!--
+*/
+/**
 Big applications have a lot of pages. On first load, loading all page elements
 is undesirable. Most of the pages are unused for the current user. To solve
 these performance issues, lazy-loading provides an easy-to-use solution.
@@ -63,9 +60,19 @@ You can also add `<dom-if>` as a route to enable restamping:
 @group Iron Elements
 @element iron-lazy-pages
 @demo demo/index.html
--->
-<dom-module id="iron-lazy-pages">
-  <template>
+*/
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import '@polymer/polymer/polymer-legacy.js';
+
+import { IronLazyPagesBehavior } from './iron-lazy-pages-behavior.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+Polymer({
+  _template: html`
     <style>
       :host {
         display: block;
@@ -76,15 +83,11 @@ You can also add `<dom-if>` as a route to enable restamping:
     </style>
 
     <slot></slot>
-  </template>
-  <script>
-    Polymer({
+`,
 
-      is: 'iron-lazy-pages',
+  is: 'iron-lazy-pages',
 
-      behaviors: [
-        Polymer.IronLazyPagesBehavior
-      ]
-    });
-  </script>
-</dom-module>
+  behaviors: [
+    IronLazyPagesBehavior
+  ]
+});
