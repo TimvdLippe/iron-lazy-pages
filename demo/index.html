@@ -13,46 +13,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-lazy-pages Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script>
     window.Polymer = window.Polymer || {dom: 'shadow'};
     </script>
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../paper-tabs/paper-tabs.html">
-    <link rel="import" href="../../paper-tabs/paper-tab.html">
-    <link rel="import" href="../../paper-spinner/paper-spinner.html">
-    <link rel="import" href="../iron-lazy-pages.html">
+    <script type="module" src="../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../../@polymer/paper-tabs/paper-tabs.js"></script>
+    <script type="module" src="../../@polymer/paper-tabs/paper-tab.js"></script>
+    <script type="module" src="../../@polymer/paper-spinner/paper-spinner.js"></script>
+    <script type="module" src="../iron-lazy-pages.js"></script>
 
-    <style is="custom-style" include="demo-pages-shared-styles"></style>
-    <style>
+    <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.setAttribute('style', 'display: none;');
+$_documentContainer.innerHTML = `<style is="custom-style" include="demo-pages-shared-styles"></style>`;
+document.head.appendChild($_documentContainer.content);
+</script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.setAttribute('style', 'display: none;');
+
+$_documentContainer.innerHTML = `<style>
       .centered {
         margin: 20px auto;
         max-width: 750px;
       }
-    </style>
+    </style>`;
+
+document.head.appendChild($_documentContainer.content);
+</script>
   </head>
   <body unresolved>
-    <h2 class="centered">&lt;iron-lazy-pages&gt;</h2>
-    <h4 class="centered">Basic usage</h4>
-    <demo-snippet class="centered">
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<h2 class="centered">&lt;iron-lazy-pages&gt;</h2>`;
+document.body.appendChild($_documentContainer.content);
+</script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<h4 class="centered">Basic usage</h4>`;
+document.body.appendChild($_documentContainer.content);
+</script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<demo-snippet class="centered">
       <template>
         <dom-bind>
           <template is="dom-bind">
-            <paper-tabs selected="{{route}}" attr-for-selected='key'>
-              <paper-tab key='foo'>Foo</paper-tab>
-              <paper-tab key='bar'>Bar</paper-tab>
-              <paper-tab key='baz'>Baz!</paper-tab>
-              <paper-tab key='dom-if'>dom-if</paper-tab>
-              <paper-tab key='dom-if-input'>dom-if with input</paper-tab>
+            <paper-tabs selected="{{route}}" attr-for-selected="key">
+              <paper-tab key="foo">Foo</paper-tab>
+              <paper-tab key="bar">Bar</paper-tab>
+              <paper-tab key="baz">Baz!</paper-tab>
+              <paper-tab key="dom-if">dom-if</paper-tab>
+              <paper-tab key="dom-if-input">dom-if with input</paper-tab>
             </paper-tabs>
 
             <div>
-              <iron-lazy-pages
-                  attr-for-selected="data-route"
-                  selected="{{route}}"
-                  loading="{{loading}}"
-                  hide-immediately>
+              <iron-lazy-pages attr-for-selected="data-route" selected="{{route}}" loading="{{loading}}" hide-immediately="">
                 <x-foo data-route="foo" data-path="x-foo.html"></x-foo>
                 <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
                 <div data-route="baz">
@@ -61,12 +88,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
                 <template is="dom-if" data-route="dom-if">
                   Another inline template inside a dom-if
-                  <label>This is a text field that, if the page is deselected, keeps it text <input type="text"/></label>
+                  <label>This is a text field that, if the page is deselected, keeps it text <input type="text"></label>
                 </template>
-                <template is="dom-if" data-route="dom-if-input" restamp>
-                  <label>This is a text field that, if the page is deselected, is cleared due to restamp <input type="text"/></label>
+                <template is="dom-if" data-route="dom-if-input" restamp="">
+                  <label>This is a text field that, if the page is deselected, is cleared due to restamp <input type="text"></label>
                   <div>
-                    <label>Click this button to test if nested dom-ifs work <input type="checkbox" checked="{{hostChecked::change}}" /></label>
+                    <label>Click this button to test if nested dom-ifs work <input type="checkbox" checked="{{hostChecked::change}}"></label>
                     <template is="dom-if" if="[[hostChecked]]">
                       <div>
                         Tests
@@ -80,20 +107,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
         </dom-bind>
       </template>
-    </demo-snippet>
+    </demo-snippet>`;
 
-    <dom-module id="x-wrapper">
+document.body.appendChild($_documentContainer.content);
+</script>
+
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<dom-module id="x-wrapper">
       <template>
         <style>
           :host {
             display: block;
           }
         </style>
-        <iron-lazy-pages attr-for-selected="data-route"
-                         selected="{{selected}}"
-                         loading="{{loading}}"
-                         selected-attribute="selected"
-                         hide-immediately>
+        <iron-lazy-pages attr-for-selected="data-route" selected="{{selected}}" loading="{{loading}}" selected-attribute="selected" hide-immediately="">
           <slot></slot>
         </iron-lazy-pages>
       </template>
@@ -111,15 +140,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         });
-      </script>
+      &lt;/script>
+    </dom-module>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>n-lazy-pages.js';
+import { Polymer } from '../../@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'x-wrapper',
+  properties: {
+    selected: {
+      type: String,
+      notify: true
+    },
+    loading: {
+      type: Boolean,
+      notify: true
+    }
+  }
+});
+</script>
     </dom-module>
 
-    <h2 class="centered">Distribute templates to light DOM</h2>
-    <demo-snippet class="centered">
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<h2 class="centered">Distribute templates to light DOM</h2>`;
+document.body.appendChild($_documentContainer.content);
+</script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<demo-snippet class="centered">
       <template>
         <dom-bind>
           <template is="dom-bind">
-            <paper-tabs selected="{{route}}" attr-for-selected='key'>
+            <paper-tabs selected="{{route}}" attr-for-selected="key">
               <paper-tab key="foo">Foo</paper-tab>
               <paper-tab key="bar">Bar</paper-tab>
               <paper-tab key="baz">Baz!</paper-tab>
@@ -143,36 +198,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
         </dom-bind>
       </template>
-    </demo-snippet>
+    </demo-snippet>`;
 
-    <h4 class="centered">Selective restamp usage</h4>
-    <demo-snippet class="centered">
+document.body.appendChild($_documentContainer.content);
+</script>
+
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<h4 class="centered">Selective restamp usage</h4>`;
+document.body.appendChild($_documentContainer.content);
+</script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<demo-snippet class="centered">
       <template>
         <dom-bind>
           <template is="dom-bind">
-            <paper-tabs selected="{{route}}" attr-for-selected='key'>
-              <paper-tab key='foo'>Foo</paper-tab>
-              <paper-tab key='bar'>Bar</paper-tab>
+            <paper-tabs selected="{{route}}" attr-for-selected="key">
+              <paper-tab key="foo">Foo</paper-tab>
+              <paper-tab key="bar">Bar</paper-tab>
             </paper-tabs>
 
-            <iron-lazy-pages
-                attr-for-selected="data-route"
-                selected="{{route}}"
-                loading="{{loading}}"
-                hide-immediately>
-              <template is="dom-if" data-route="foo" restamp>
-                Leaving this tab and coming back will loose input value due to restamp<br/>
-                <input type="text"/>
+            <iron-lazy-pages attr-for-selected="data-route" selected="{{route}}" loading="{{loading}}" hide-immediately="">
+              <template is="dom-if" data-route="foo" restamp="">
+                Leaving this tab and coming back will loose input value due to restamp<br>
+                <input type="text">
               </template>
               <template is="dom-if" data-route="bar">
-                Leaving this tab and coming back will keep input value<br/>
-                <input type="text"/>
+                Leaving this tab and coming back will keep input value<br>
+                <input type="text">
               </template>
             </iron-lazy-pages>
             <paper-spinner active="[[loading]]"></paper-spinner>
           </template>
         </dom-bind>
       </template>
-    </demo-snippet>
+    </demo-snippet>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
   </body>
 </html>
