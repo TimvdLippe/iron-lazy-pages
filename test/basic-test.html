@@ -154,7 +154,12 @@ suite('<iron-lazy-pages>', function() {
         done();
       });
       pages._loadUrl = function(url, onSuccess, onFailure) {
-        onFailure();
+        const error = new Error('Custom error');
+        try {
+          onFailure(error);
+        } catch (e) {
+          assert.equal(e, error);
+        }
       };
       pages.selected = 'foo';
     });
