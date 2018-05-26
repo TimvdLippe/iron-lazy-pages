@@ -138,7 +138,10 @@ export const IronLazyPagesBehaviorImpl = {
     this._loadUrl(url, ()=> {
       page.classList.add('iron-lazy-loaded');
       onFinished();
-    }, () => onFinished());
+    }, (e) => {
+      onFinished();
+      throw e;
+    });
   },
 
   _loadUrl: function(url, onSuccess, onFailure) {
