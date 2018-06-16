@@ -21,9 +21,9 @@ Example:
 ```
 <custom-element-demo>
   <template>
-    <link rel="import" href="iron-lazy-pages.html">
-    <link rel="import" href="../paper-tabs/paper-tabs.html">
-    <link rel="import" href="../paper-tabs/paper-tab.html">
+    <script type="module" src="iron-lazy-pages.js"></script>
+    <script type="module" src="node_modules/@polymer/paper-tabs/paper-tabs.js"></script>
+    <script type="module" src="node_modules/@polymer/paper-tabs/paper-tab.js"></script>
     <dom-bind>
       <template is="dom-bind">
         <paper-tabs selected="{{route}}" attr-for-selected='key'>
@@ -64,9 +64,9 @@ You can also add `<dom-if>` as a route to enable restamping:
 ```
 <custom-element-demo>
   <template>
-    <link rel="import" href="iron-lazy-pages.html">
-    <link rel="import" href="../paper-tabs/paper-tabs.html">
-    <link rel="import" href="../paper-tabs/paper-tab.html">
+  <script type="module" src="iron-lazy-pages.js"></script>
+  <script type="module" src="node_modules/@polymer/paper-tabs/paper-tabs.js"></script>
+  <script type="module" src="node_modules/@polymer/paper-tabs/paper-tab.js"></script>
     <dom-bind>
       <template is="dom-bind">
         <paper-tabs selected="{{route}}" attr-for-selected='key'>
