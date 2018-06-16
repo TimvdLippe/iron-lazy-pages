@@ -8,6 +8,10 @@
   ],
   "homepage": "http://timvdlippe.github.io/iron-lazy-pages/",
   "name": "iron-lazy-pages",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/timvdlippe/iron-lazy-pages.git"
+  },
   "version": "3.0.0",
   "resolutions": {
     "inherits": "2.0.3",
