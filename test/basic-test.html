@@ -13,19 +13,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
-
-    <link rel="import" href="../iron-lazy-pages.html">
-    <link rel="import" href="../../iron-selector/iron-selector.html">
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
   </head>
   <body>
 
     <test-fixture id="basic">
       <template>
         <iron-lazy-pages attr-for-selected="data-route" selected-attribute="selected" selected-class="selected">
-          <span data-route="foo" data-path="foo.html">Foo</span>
-          <span data-route="bar" data-path="bar.html">Bar</span>
+          <span data-route="foo" data-path="foo.js">Foo</span>
+          <span data-route="bar" data-path="bar.js">Bar</span>
           <iron-selector data-route="nested" selected="0">
             <section>Something</section>
             <section>Something Else</section>
@@ -42,8 +39,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <test-fixture id="light">
       <template>
         <x-wrapper>
-          <span class="foo" data-route="foo" data-path="foo.html">Foo</span>
-          <span class="bar" data-route="bar" data-path="bar.html">Bar</span>
+          <span class="foo" data-route="foo" data-path="foo.js">Foo</span>
+          <span class="bar" data-route="bar" data-path="bar.js">Bar</span>
           <iron-selector data-route="nested" selected="0">
             <section>Something</section>
             <section>Something Else</section>
@@ -64,158 +61,170 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-lazy-pages>
       </template>
     </dom-module>
-    <script>
-    HTMLImports.whenReady(function () {
-      Polymer({
-        is: 'x-wrapper'
-      });
-      suite('<iron-lazy-pages>', function() {
-        var pages, importHref;
+    <script type="module">
+import '../iron-lazy-pages.js';
+import '@polymer/iron-selector/iron-selector.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import { Base } from '@polymer/polymer/polymer-legacy.js';
+Polymer({
+  is: 'x-wrapper'
+});
+suite('<iron-lazy-pages>', function() {
+  var pages, importHref;
 
-        setup(function() {
-          pages = fixture('basic');
-          importHref = Polymer.Base.importHref;
-        });
+  setup(function() {
+    pages = fixture('basic');
+    importHref = pages._loadUrl;
+  });
 
-        teardown(function() {
-          Polymer.Base.importHref = importHref;
-        });
+  teardown(function() {
+    pages._loadUrl = importHref;
+  });
 
-        commonTests();
+  commonTests();
 
-        test('sets dom-if to true', function(done) {
-          pages.addEventListener('iron-items-changed', function() {
-            assert.isTrue(pages.items[3]['if']);
-            // Polymer 2 version
-            if (pages.items[3].__render) {
-              pages.addEventListener('dom-change', function() {
-                assert.notEqual(pages.querySelector('.dom-if-stamped', null));
-                done();
-              })
-            // Polymer 1 version
-            } else {
-              done();
-            }
-          });
-          Polymer.Base.importHref = function(url, onSuccess) {
-            onSuccess();
-          };
-          pages.selected = 'dom-if';
-        });
-
-        suite('light-dom', function() {
-          setup(function() {
-            var lightFixture = fixture('light');
-            pages = lightFixture.$$('iron-lazy-pages');
-            importHref = Polymer.Base.importHref;
-          });
-
-          teardown(function() {
-            Polymer.Base.importHref = importHref;
-          });
-
-          commonTests();
-        });
-
-        function commonTests() {
-          test('loads content', function(done) {
-            pages.addEventListener('iron-items-changed', function() {
-              assert.equal(pages.selectedItem, pages.items[0]);
-              done();
-            });
-            pages.selected = 'foo';
-          });
-
-          test('changes content after selected', function(done) {
-            pages.selected = 'foo';
-            pages.addEventListener('iron-items-changed', function() {
-              assert.equal(pages.selectedItem, pages.items[1]);
-              done();
-            });
-            pages.selected = 'bar';
-          });
-
-          test('sets iron-lazy-selected and -loaded on item', function(done) {
-            pages.addEventListener('iron-items-changed', function() {
-              assert.isTrue(pages.items[0].classList.contains('iron-lazy-selected'));
-              assert.isTrue(pages.items[0].classList.contains('iron-lazy-loaded'));
-              done();
-            });
-            Polymer.Base.importHref = function(url, onSuccess) {
-              onSuccess();
-            };
-            pages.selected = 'foo';
-          });
-
-          test('does not set iron-lazy-loaded on item when load failed', function(done) {
-            pages.addEventListener('iron-items-changed', function() {
-              assert.isTrue(pages.items[0].classList.contains('iron-lazy-selected'));
-              assert.isFalse(pages.items[0].classList.contains('iron-lazy-loaded'));
-              done();
-            });
-            Polymer.Base.importHref = function(url, onSuccess, onFailure) {
-              onFailure();
-            };
-            pages.selected = 'foo';
-          });
-
-          test('removes iron-lazy classes after selected has changed', function(done) {
-            pages.selected = 'foo';
-            pages.addEventListener('iron-items-changed', function() {
-              assert.isFalse(pages.items[0].classList.contains('iron-lazy-selected'));
-              assert.isTrue(pages.items[1].classList.contains('iron-lazy-selected'));
-              assert.isTrue(pages.items[1].classList.contains('iron-lazy-loaded'));
-              done();
-            });
-            Polymer.Base.importHref = function(url, onSuccess, onFailure) {
-              onSuccess();
-            };
-            pages.selected = 'bar';
-          });
-
-          test('sets loading while url is loading', function(done) {
-            Polymer.Base.importHref = function(url, onSuccess, onFailure) {
-              assert.isTrue(pages.loading);
-              done();
-            };
-            pages.selected = 'foo';
-          });
-
-          test('removes loading when url is loaded', function(done) {
-            Polymer.Base.importHref = function(url, onSuccess, onFailure) {
-              onSuccess();
-              assert.isFalse(pages.loading);
-              done();
-            };
-            pages.selected = 'foo';
-          });
-
-          test('removes loading when url loading failed', function(done) {
-            Polymer.Base.importHref = function(url, onSuccess, onFailure) {
-              onFailure();
-              assert.isFalse(pages.loading);
-              done();
-            };
-            pages.selected = 'foo';
-          });
-
-          test('does not load url if no path was specified', function() {
-            Polymer.Base.importHref = function() {
-              assert.fail();
-            };
-            pages.selected = 'nested';
-          });
-
-          test('does not throw with nested iron-selector', function(done) {
-            pages.addEventListener('iron-items-changed', function() {
-              pages.items[2].select(1);
-              done();
-            });
-            pages.selected = 'nested';
-          });
-        }
-      });
+  test('sets dom-if to true', function(done) {
+    pages.addEventListener('iron-items-changed', function() {
+      assert.isTrue(pages.items[3]['if']);
+      // Polymer 2 version
+      if (pages.items[3].__render) {
+        pages.addEventListener('dom-change', function() {
+          assert.notEqual(pages.querySelector('.dom-if-stamped', null));
+          done();
+        })
+      // Polymer 1 version
+      } else {
+        done();
+      }
     });
-    </script>
+    pages._loadUrl = function(url, onSuccess) {
+      onSuccess();
+    };
+    pages.selected = 'dom-if';
+  });
+
+  suite('light-dom', function() {
+    setup(function() {
+      var lightFixture = fixture('light');
+      pages = lightFixture.$$('iron-lazy-pages');
+      importHref = pages._loadUrl;
+    });
+
+    teardown(function() {
+      pages._loadUrl = importHref;
+    });
+
+    commonTests();
+  });
+
+  function commonTests() {
+    test('loads content', function(done) {
+      pages.addEventListener('iron-items-changed', function() {
+        assert.equal(pages.selectedItem, pages.items[0]);
+        done();
+      });
+      pages.selected = 'foo';
+    });
+
+    test('changes content after selected', function(done) {
+      pages.selected = 'foo';
+      pages.addEventListener('iron-items-changed', function() {
+        assert.equal(pages.selectedItem, pages.items[1]);
+        done();
+      });
+      pages.selected = 'bar';
+    });
+
+    test('sets iron-lazy-selected and -loaded on item', function(done) {
+      pages.addEventListener('iron-items-changed', function() {
+        assert.isTrue(pages.items[0].classList.contains('iron-lazy-selected'));
+        assert.isTrue(pages.items[0].classList.contains('iron-lazy-loaded'));
+        done();
+      });
+      pages._loadUrl = function(url, onSuccess) {
+        onSuccess();
+      };
+      pages.selected = 'foo';
+    });
+
+    test('does not set iron-lazy-loaded on item when load failed', function(done) {
+      pages.addEventListener('iron-items-changed', function() {
+        assert.isTrue(pages.items[0].classList.contains('iron-lazy-selected'));
+        assert.isFalse(pages.items[0].classList.contains('iron-lazy-loaded'));
+        done();
+      });
+      pages._loadUrl = function(url, onSuccess, onFailure) {
+        const error = new Error('Custom error');
+        try {
+          onFailure(error);
+        } catch (e) {
+          assert.equal(e, error);
+        }
+      };
+      pages.selected = 'foo';
+    });
+
+    test('removes iron-lazy classes after selected has changed', function(done) {
+      pages.selected = 'foo';
+      pages.addEventListener('iron-items-changed', function() {
+        assert.isFalse(pages.items[0].classList.contains('iron-lazy-selected'));
+        assert.isTrue(pages.items[1].classList.contains('iron-lazy-selected'));
+        assert.isTrue(pages.items[1].classList.contains('iron-lazy-loaded'));
+        done();
+      });
+      pages._loadUrl = function(url, onSuccess, onFailure) {
+        onSuccess();
+      };
+      pages.selected = 'bar';
+    });
+
+    test('sets loading while url is loading', function(done) {
+      pages._loadUrl = function(url, onSuccess, onFailure) {
+        assert.isTrue(pages.loading);
+        done();
+      };
+      pages.selected = 'foo';
+    });
+
+    test('removes loading when url is loaded', function(done) {
+      pages._loadUrl = function(url, onSuccess, onFailure) {
+        onSuccess();
+        assert.isFalse(pages.loading);
+        done();
+      };
+      pages.selected = 'foo';
+    });
+
+    test('removes loading when url loading failed', function(done) {
+      pages._loadUrl = function(url, onSuccess, onFailure) {
+        const error = new Error('custom error');
+        try {
+          onFailure(error);
+        } catch (e) {
+          assert.equal(e, error);
+        }
+        assert.isFalse(pages.loading);
+        done();
+      };
+      pages.selected = 'foo';
+    });
+
+    test('does not load url if no path was specified', function() {
+      pages._loadUrl = function() {
+        assert.fail();
+      };
+      pages.selected = 'nested';
+    });
+
+    test('does not throw with nested iron-selector', function(done) {
+      pages.addEventListener('iron-items-changed', function() {
+        pages.items[2].select(1);
+        done();
+      });
+      pages.selected = 'nested';
+    });
+  }
+});
+</script>
   </body>
 </html>

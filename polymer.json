@@ -1,5 +1,11 @@
 {
   "lint": {
     "rules": ["polymer-2-hybrid"]
-  }
+  },
+  "sources": [
+   "iron-lazy-pages.js",
+   "iron-lazy-pages-behavior.js"
+  ],
+  "moduleResolution": "node",
+  "npm": true
 }

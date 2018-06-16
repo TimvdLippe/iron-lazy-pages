@@ -1,17 +1,19 @@
-<!--
+/**
 @license
 Copyright (C) 2016, Tim van der Lippe
 All rights reserved.
 
 This software may be modified and distributed under the terms
 of the BSD license.  See the LICENSE file for details.
--->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-selector/iron-selectable.html">
+*/
+import { Base } from '@polymer/polymer/polymer-legacy.js';
 
-<script>
+import { IronSelectableBehavior } from '@polymer/iron-selector/iron-selectable.js';
+import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+import { resolveUrl } from '@polymer/polymer/lib/utils/resolve-url.js';
+
 /** @polymerBehavior */
-Polymer.IronLazyPagesBehaviorImpl = {
+export const IronLazyPagesBehaviorImpl = {
   properties: {
     // as the selected page is the only one visible, activateEvent
     // is both non-sensical and problematic; e.g. in cases where a user
@@ -85,7 +87,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
 
   _itemDeselected: function(event) {
     // Do not listen to possible sub-selectors if these fired and iron-deselect
-    if (Polymer.dom(event).rootTarget !== this) {
+    if (dom(event).rootTarget !== this) {
       return;
     }
     if (this.hideImmediately) {
@@ -98,7 +100,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
 
   _itemSelected: function(event) {
     // Do not listen to possible sub-selectors if these fired and iron-select
-    if (Polymer.dom(event).rootTarget !== this) {
+    if (dom(event).rootTarget !== this) {
       return;
     }
     var self = this;
@@ -133,10 +135,19 @@ Polymer.IronLazyPagesBehaviorImpl = {
     } else {
       url = page.dataset.path;
     }
-    Polymer.Base.importHref(url, function() {
+    this._loadUrl(url, ()=> {
       page.classList.add('iron-lazy-loaded');
       onFinished();
-    }, onFinished);
+    }, (e) => {
+      onFinished();
+      throw e;
+    });
+  },
+
+  _loadUrl: function(url, onSuccess, onFailure) {
+    import(resolveUrl(url))
+        .then(onSuccess)
+        .catch(onFailure);
   },
 
   _show: function(page) {
@@ -152,8 +163,7 @@ Polymer.IronLazyPagesBehaviorImpl = {
 };
 
 /** @polymerBehavior */
-Polymer.IronLazyPagesBehavior = [
-  Polymer.IronSelectableBehavior,
-  Polymer.IronLazyPagesBehaviorImpl
+export const IronLazyPagesBehavior = [
+  IronSelectableBehavior,
+  IronLazyPagesBehaviorImpl
 ];
-</script>

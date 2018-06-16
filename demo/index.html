@@ -13,16 +13,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-lazy-pages Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script>
     window.Polymer = window.Polymer || {dom: 'shadow'};
     </script>
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../paper-tabs/paper-tabs.html">
-    <link rel="import" href="../../paper-tabs/paper-tab.html">
-    <link rel="import" href="../../paper-spinner/paper-spinner.html">
-    <link rel="import" href="../iron-lazy-pages.html">
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../node_modules/@polymer/paper-tabs/paper-tabs.js"></script>
+    <script type="module" src="../node_modules/@polymer/paper-tabs/paper-tab.js"></script>
+    <script type="module" src="../node_modules/@polymer/paper-spinner/paper-spinner.js"></script>
+    <script type="module" src="../iron-lazy-pages.js"></script>
 
     <style is="custom-style" include="demo-pages-shared-styles"></style>
     <style>
@@ -53,8 +53,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   selected="{{route}}"
                   loading="{{loading}}"
                   hide-immediately>
-                <x-foo data-route="foo" data-path="x-foo.html"></x-foo>
-                <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
+                <x-foo data-route="foo" data-path="x-foo.js"></x-foo>
+                <x-bar data-route="bar" data-path="x-bar.js"></x-bar>
                 <div data-route="baz">
                   <h3>Baz page</h3>
                   <span>from inline template</span>
@@ -97,7 +97,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <slot></slot>
         </iron-lazy-pages>
       </template>
-      <script>
+      <script type="module">
+        import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
         Polymer({
           is: 'x-wrapper',
           properties: {
@@ -132,8 +133,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </style>
 
             <x-wrapper selected="{{route}}" loading="{{loading}}">
-              <x-foo class="foo" data-route="foo" data-path="x-foo.html"></x-foo>
-              <x-bar data-route="bar" data-path="x-bar.html"></x-bar>
+              <x-foo class="foo" data-route="foo" data-path="x-foo.js"></x-foo>
+              <x-bar data-route="bar" data-path="x-bar.js"></x-bar>
               <div data-route="baz">
                 <h3>Baz page</h3>
                 <span>from inline template</span>
