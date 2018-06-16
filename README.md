@@ -1,6 +1,6 @@
 # iron-lazy-pages
 
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/timvdlippe/iron-lazy-pages)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/iron-lazy-pages)
 [![Build Status](https://travis-ci.org/TimvdLippe/iron-lazy-pages.svg?branch=master)](https://travis-ci.org/TimvdLippe/iron-lazy-pages)
 
 [`<iron-pages>`](https://github.com/PolymerElements/iron-pages) with lazy-loading functionality.
